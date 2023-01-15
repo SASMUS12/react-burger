@@ -1,0 +1,14 @@
+.app {
+  height: 100vh;
+  overflow: hidden;
+  text-align: center;
+  background-color: #131316;
+}
+.main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 40px;
+  margin-bottom: 40px;
+  box-sizing: border-box;
+}
