@@ -22,7 +22,7 @@ const IngredientsGrid = ({ type, ingredients, updateConstructor, openModal }) =>
 
 IngredientsGrid.propTypes = {
   type: PropTypes.string,
-  ingredients: PropTypes.arrayOf(PropTypes.object),
+  ingredients: PropTypes.arrayOf(PropTypes.object).isRequired,
   updateConstructor: PropTypes.func,
   openModal: PropTypes.func
 };

@@ -13,13 +13,14 @@ const ConstructorItem = ({ data, type }) => {
         price={data.price}
         thumbnail={data.image}
         type={type}
+        
       />
     </div>
   );
 };
 
 ConstructorItem.propTypes = {
-  data: PropTypes.object,
+  data: PropTypes.object.isRequired,
   type: PropTypes.string
 };
 

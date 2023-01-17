@@ -33,18 +33,19 @@ function App() {
     setConstructorState([...constructorState, ingredientData]);
   });
 
-  async function fetchApiomponents() {
+  async function fetchIngredients() {
     try {
       const API_URL = 'https://norma.nomoreparties.space/api/ingredients/';
       const res = await fetch(API_URL);
       const data = await res.json();
+      
       setIngredients(data.data);
     } catch (err) {
       console.log(err);
     }
   }
   useEffect(() => {
-    fetchApiomponents();
+    fetchIngredients();
   }, []);
 
   return (
@@ -73,9 +74,5 @@ function App() {
     </div>
   );
 }
-
-App.propTypes = {
-  ingredients: PropTypes.arrayOf(PropTypes.object)
-};
 
 export default App;

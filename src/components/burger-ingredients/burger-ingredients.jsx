@@ -37,7 +37,7 @@ const BurgerIngredients = ({ ingredients, updateConstructor, openModal }) => {
 };
 
 BurgerIngredients.propTypes = {
-  ingredients: PropTypes.arrayOf(PropTypes.object),
+  ingredients: PropTypes.arrayOf(PropTypes.object).isRequired,
   updateConstructor: PropTypes.func,
   openModal: PropTypes.func
 };

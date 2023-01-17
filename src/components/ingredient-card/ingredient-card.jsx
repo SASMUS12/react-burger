@@ -14,7 +14,7 @@ const IngredientCard = ({ data, updateConstructor, openModal }) => {
 
   return (
     <button className={`${styles.wrapper} btn-default`} onClick={handleClick}>
-      <img src={data.image} className={`${styles.photo_img} mr-4 ml-4`} />
+      <img src={data.image} alt={data.name} className={`${styles.photo_img} mr-4 ml-4`} />
       <div className={styles.price}>
         <p className="text text_type_digits-default">{data.price}</p>
         <CurrencyIcon type="primary" />
@@ -26,7 +26,7 @@ const IngredientCard = ({ data, updateConstructor, openModal }) => {
 };
 
 IngredientCard.propTypes = {
-  data: PropTypes.object,
+  data: PropTypes.object.isRequired,
   updateConstructor: PropTypes.func,
   openModal: PropTypes.func
 };

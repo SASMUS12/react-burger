@@ -15,7 +15,11 @@ const BurgerConstructor = ({ data, openModal }) => {
     data.length > 0 && (
       <section className={`${styles.wrapper} mt-25 pl-4`}>
         {data.map(item => {
-          return item.type === 'bun' && <ConstructorItem data={item} key={item._id} type="top" />;
+          return (
+            item.type === 'bun' && (
+              <ConstructorItem data={item} key={item._id} text={`${item.name} (верх)`} type="top" />
+            )
+          );
         })}
         <ul className={`${styles.list} list-default my-scroll pr-2`}>
           {data.map(
@@ -29,7 +33,14 @@ const BurgerConstructor = ({ data, openModal }) => {
         </ul>
         {data.map(item => {
           return (
-            item.type === 'bun' && <ConstructorItem data={item} key={item._id} type="bottom" />
+            item.type === 'bun' && (
+              <ConstructorItem
+                data={item}
+                key={item._id}
+                text={`${item.name}+ (низ)`}
+                type="bottom"
+              />
+            )
           );
         })}
         <div className={`${styles.checkout} mt-6`}>
@@ -51,7 +62,7 @@ const BurgerConstructor = ({ data, openModal }) => {
 };
 
 BurgerConstructor.propTypes = {
-  data: PropTypes.arrayOf(PropTypes.object),
+  data: PropTypes.arrayOf(PropTypes.object).isRequired,
   openModal: PropTypes.func
 };
 
