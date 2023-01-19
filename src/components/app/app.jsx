@@ -38,7 +38,9 @@ function App() {
       const API_URL = 'https://norma.nomoreparties.space/api/ingredients/';
       const res = await fetch(API_URL);
       const data = await res.json();
-      
+      if (!res.ok) {
+        return Promise.reject(`Ошибка ${res.status}`);
+      }
       setIngredients(data.data);
     } catch (err) {
       console.log(err);
@@ -74,6 +76,5 @@ function App() {
     </div>
   );
 }
-
 
 export default App;
