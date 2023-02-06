@@ -8,6 +8,7 @@ import thunk from 'redux-thunk';
 import './index.css';
 import App from './components/app/app';
 import reportWebVitals from './reportWebVitals';
+
 const store = createStore(rootReducer, applyMiddleware(thunk));
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

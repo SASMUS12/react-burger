@@ -1,9 +1,7 @@
-import React from 'react';
-import { useMemo, useCallback } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useDrop } from 'react-dnd';
 import update from 'immutability-helper';
-
 import {
   CurrencyIcon,
   Button,
@@ -14,7 +12,8 @@ import { createOrder } from '../../services/actions/order';
 
 import ConstructorItem from '../constructor-item/constructor-item';
 import Loader from '../loader/loader';
-import constructorStyles from './burger-constructor.module.css';
+
+import styles from './burger-constructor.module.css';
 import itemStyles from '../constructor-item/constructor-item.module.css';
 
 const BurgerConstructor = () => {
@@ -60,9 +59,7 @@ const BurgerConstructor = () => {
 
   return (
     <section
-      className={`${constructorStyles.wrapper} ${
-        isOver && constructorStyles.wrapper_isOver
-      } mt-20 pl-4`}
+      className={`${styles.wrapper} ${isOver && styles.wrapper_isOver} mt-20 pl-4`}
       ref={dropRef}
     >
       {data.map(item => {
@@ -80,7 +77,7 @@ const BurgerConstructor = () => {
           )
         );
       })}
-      <ul className={`${constructorStyles.list} list-default my-scroll pr-2`}>
+      <ul className={`${styles.list} list-default my-scroll pr-2`}>
         {data.map(
           (item, i) =>
             item.type !== 'bun' && (
@@ -111,14 +108,14 @@ const BurgerConstructor = () => {
         );
       })}
       {data.length > 0 && (
-        <div className={`${constructorStyles.checkout} mt-6`}>
+        <div className={`${styles.checkout} mt-6`}>
           <p className="text text_type_digits-medium mr-2">{getPrice}</p>
           <CurrencyIcon type="primary" />
           <Button
             htmlType="button"
             type="primary"
             size="large"
-            extraClass={`${constructorStyles.button} ml-10 mr-4`}
+            extraClass={`${styles.button} ml-10 mr-4`}
             onClick={e => openOrderModal(e)}
           >
             {isLoading ? <Loader /> : 'Оформить заказ'}

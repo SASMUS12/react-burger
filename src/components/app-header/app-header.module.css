@@ -31,8 +31,6 @@
   align-items: center;
   gap: 8px;
   padding: 16px 20px 16px 20px;
-  /* border: 1px solid rgba(255, 255, 255, 0.823); */
-  /* border-radius: 40px; */
   color: var(--main-txt-color);
   text-decoration: none;
 }

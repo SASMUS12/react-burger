@@ -1,13 +1,13 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import gridStyles from './ingredients-grid.module.css';
+import styles from './ingredients-grid.module.css';
 import Ingredient from '../ingredient/ingredient';
 
 const IngredientsGrid = ({ type }) => {
   const ingredients = useSelector(store => store.ingredientsData.ingredients);
   return (
-    <div className={`${gridStyles.grid} pt-6 pr-3 pb-10 pl-3`}>
+    <div className={`${styles.grid} pt-6 pr-3 pb-10 pl-3`}>
       {Array.from(ingredients)
         .filter(elem => elem.type === type)
         .map(item => (

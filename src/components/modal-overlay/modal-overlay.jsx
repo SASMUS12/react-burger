@@ -1,10 +1,10 @@
 import React from 'react';
-import overlayStyles from './modal-overlay.module.css';
+import styles from './modal-overlay.module.css';
 import PropTypes from 'prop-types';
 
 const ModalOverlay = ({ children, closeModal }) => {
   return (
-    <div className={overlayStyles.overlay} onClick={closeModal}>
+    <div className={styles.overlay} onClick={closeModal}>
       {children}
     </div>
   );

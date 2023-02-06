@@ -1,11 +1,10 @@
-import React from 'react';
-import { useMemo } from 'react';
+import React, { useMemo } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { useDrag } from 'react-dnd';
 import PropTypes from 'prop-types';
 import { ingredientType } from '../../utils/types';
 import { CurrencyIcon, Counter } from '@ya.praktikum/react-developer-burger-ui-components';
-import ingredientStyles from './ingredient.module.css';
-import { useDrag } from 'react-dnd';
-import { useSelector, useDispatch } from 'react-redux';
+import styles from './ingredient.module.css';
 import { setIngredientDetails } from '../../services/actions/ingredient-details';
 
 const Ingredient = ({ data }) => {
@@ -32,14 +31,12 @@ const Ingredient = ({ data }) => {
 
   return (
     <button
-      className={`${ingredientStyles.wrapper} ${
-        isDrag && ingredientStyles.wrapper_onDrag
-      } btn-default`}
+      className={`${styles.wrapper} ${isDrag && styles.wrapper_onDrag} btn-default`}
       ref={dragRef}
       onClick={e => openIngredientModal(e)}
     >
-      <img src={data.image} alt={data.name} className={`${ingredientStyles.img} mr-4 ml-4`} />
-      <div className={ingredientStyles.price}>
+      <img src={data.image} alt={data.name} className={`${styles.img} mr-4 ml-4`} />
+      <div className={styles.price}>
         <p className="text text_type_digits-default">{data.price}</p>
         <CurrencyIcon type="primary" />
       </div>

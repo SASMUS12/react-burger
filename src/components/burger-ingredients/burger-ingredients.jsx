@@ -4,8 +4,7 @@ import { useInView } from 'react-intersection-observer';
 
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
 import IngredientsGrid from '../ingredients-grid/ingredients-grid';
-
-import ingredientsStyles from './burger-ingredients.module.css';
+import styles from './burger-ingredients.module.css';
 
 const BurgerIngredients = () => {
   const rootRef = useRef(null);
@@ -31,11 +30,9 @@ const BurgerIngredients = () => {
   };
 
   return (
-    <section className={ingredientsStyles.section}>
-      <h1 className={`${ingredientsStyles.heading} text text_type_main-large mb-5`}>
-        Соберите бургер
-      </h1>
-      <div className={ingredientsStyles.tabs}>
+    <section className={styles.section}>
+      <h1 className={`${styles.heading} text text_type_main-large mb-5`}>Соберите бургер</h1>
+      <div className={styles.tabs}>
         <Tab value="one" active={bunIsInView} onClick={() => handleClick(bunRef)}>
           Булки
         </Tab>
@@ -54,21 +51,21 @@ const BurgerIngredients = () => {
           Начинки
         </Tab>
       </div>
-      <div className={`${ingredientsStyles.wrapper} mt-10 pr-2 my-scroll`} ref={rootRef}>
+      <div className={`${styles.wrapper} mt-10 pr-2 my-scroll`} ref={rootRef}>
         <div ref={inViewBunRef}>
-          <h2 className={`${ingredientsStyles.heading} text text_type_main-medium`} ref={bunRef}>
+          <h2 className={`${styles.heading} text text_type_main-medium`} ref={bunRef}>
             Булки
           </h2>
           <IngredientsGrid type={'bun'} />
         </div>
         <div ref={inViewSauceRef}>
-          <h2 className={`${ingredientsStyles.heading} text text_type_main-medium`} ref={sauceRef}>
+          <h2 className={`${styles.heading} text text_type_main-medium`} ref={sauceRef}>
             Соусы
           </h2>
           <IngredientsGrid type={'sauce'} />
         </div>
         <div ref={inViewMainRef}>
-          <h2 className={`${ingredientsStyles.heading} text text_type_main-medium`} ref={mainRef}>
+          <h2 className={`${styles.heading} text text_type_main-medium`} ref={mainRef}>
             Начинки
           </h2>
           <IngredientsGrid type={'main'} />

@@ -1,13 +1,13 @@
 import React from 'react';
-import loaderStyles from './loader.module.css';
+import styles from './loader.module.css';
 
 const Loader = () => {
   return (
-    <div className={loaderStyles.container}>
-      <span className={loaderStyles.circle}></span>
-      <span className={loaderStyles.circle}></span>
-      <span className={loaderStyles.circle}></span>
-      <span className={loaderStyles.circle}></span>
+    <div className={styles.container}>
+      <span className={styles.circle}></span>
+      <span className={styles.circle}></span>
+      <span className={styles.circle}></span>
+      <span className={styles.circle}></span>
     </div>
   );
 };
