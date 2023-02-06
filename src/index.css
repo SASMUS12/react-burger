@@ -1,10 +1,9 @@
 :root {
-  --main-txt-color: #F2F2F3;
+  --main-txt-color: #f2f2f3;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
 
 .list-default {
@@ -30,7 +29,6 @@ code {
 
 .my-scroll::-webkit-scrollbar-track {
   background-color: rgba(47, 47, 55, 1);
-
 }
 .my-scroll::-webkit-scrollbar-thumb {
   background-color: rgba(133, 133, 173, 1);
@@ -44,7 +42,6 @@ body::-webkit-scrollbar {
 
 body::-webkit-scrollbar-track {
   background-color: rgba(47, 47, 55, 1);
-
 }
 body::-webkit-scrollbar-thumb {
   background-color: rgba(133, 133, 173, 1);

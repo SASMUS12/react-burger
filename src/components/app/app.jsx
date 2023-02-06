@@ -1,78 +1,22 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React from 'react';
+import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import styles from './app.module.css';
-import PropTypes from 'prop-types';
-import BurgerConstructor from '../burger-constructor/burger-constructor';
-import BurgerIngredients from '../burger-ingredients/burger-ingredients';
 import AppHeader from '../app-header/app-header';
-import Columns from '../columns/columns';
-import IngredientDetails from '../ingredient-details/ingredient-details';
-import OrderDetails from '../order-details/order-details';
-import Modal from '../modal/modal';
+import MainPage from '../main-page/main-page';
+import { getIngredients } from '../../services/actions/ingredients';
 
 function App() {
-  const [ingredients, setIngredients] = useState([]);
-  const [constructorState, setConstructorState] = useState([]);
-  const [isOpened, setOpened] = useState(false);
-  const [ingredientData, setIngredientData] = useState(null);
+  const dispatch = useDispatch();
 
-  const openIngredientDetails = data => {
-    setOpened(true);
-    setIngredientData(data);
-  };
-
-  const openOrderDetails = () => {
-    setOpened(true);
-  };
-
-  const closeModal = () => {
-    setOpened(false);
-    setIngredientData(null);
-  };
-
-  const updateConstructorData = useCallback(ingredientData => {
-    setConstructorState([...constructorState, ingredientData]);
-  });
-
-  async function fetchIngredients() {
-    try {
-      const API_URL = 'https://norma.nomoreparties.space/api/ingredients/';
-      const res = await fetch(API_URL);
-      const data = await res.json();
-      if (!res.ok) {
-        return Promise.reject(`Ошибка ${res.status}`);
-      }
-      setIngredients(data.data);
-    } catch (err) {
-      console.log(err);
-    }
-  }
   useEffect(() => {
-    fetchIngredients();
-  }, []);
+    dispatch(getIngredients());
+  }, [dispatch]);
 
   return (
     <div className={styles.app}>
       <AppHeader />
-      <main className={styles.main}>
-        <Columns>
-          <BurgerIngredients
-            ingredients={ingredients}
-            updateConstructor={updateConstructorData}
-            openModal={openIngredientDetails}
-          />
-          <BurgerConstructor data={constructorState} openModal={openOrderDetails} />
-        </Columns>
-        {!!isOpened && !!ingredientData && (
-          <Modal title="Детали ингредиента" closeModal={closeModal}>
-            <IngredientDetails data={ingredientData} />
-          </Modal>
-        )}
-        {!!isOpened && ingredientData === null && (
-          <Modal closeModal={closeModal}>
-            <OrderDetails />
-          </Modal>
-        )}
-      </main>
+      <MainPage />
     </div>
   );
 }

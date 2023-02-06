@@ -1,30 +1,24 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import styles from './ingredients-grid.module.css';
-import IngredientCard from '../ingredient-card/ingredient-card';
+import gridStyles from './ingredients-grid.module.css';
+import Ingredient from '../ingredient/ingredient';
 
-const IngredientsGrid = ({ type, ingredients, updateConstructor, openModal }) => {
+const IngredientsGrid = ({ type }) => {
+  const ingredients = useSelector(store => store.ingredientsData.ingredients);
   return (
-    <div className={`${styles.grid} pt-6 pr-4 pb-10 pl-4`}>
+    <div className={`${gridStyles.grid} pt-6 pr-3 pb-10 pl-3`}>
       {Array.from(ingredients)
         .filter(elem => elem.type === type)
         .map(item => (
-          <IngredientCard
-            data={item}
-            key={item._id}
-            updateConstructor={updateConstructor}
-            openModal={openModal}
-          />
+          <Ingredient data={item} key={item._id} />
         ))}
     </div>
   );
 };
 
 IngredientsGrid.propTypes = {
-  type: PropTypes.string,
-  ingredients: PropTypes.arrayOf(PropTypes.object).isRequired,
-  updateConstructor: PropTypes.func,
-  openModal: PropTypes.func
+  type: PropTypes.string.isRequired
 };
 
 export default IngredientsGrid;

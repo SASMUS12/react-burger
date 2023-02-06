@@ -1,9 +1,9 @@
-import React, { Children } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import styles from './columns.module.css';
+import columnsStyles from './columns.module.css';
 
 const Columns = ({ children }) => {
-  return <div className={styles.columns}>{children}</div>;
+  return <div className={columnsStyles.columns}>{children}</div>;
 };
 
 Columns.propTypes = {

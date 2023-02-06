@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from './app-header.module.css';
+import headerStyles from './app-header.module.css';
 
 import {
   BurgerIcon,
@@ -11,19 +11,19 @@ import {
 
 const AppHeader = () => {
   return (
-    <header className={`${styles.header} pb-4 pt-4`}>
-      <ul className={`${styles.content} list-default`}>
+    <header className={`${headerStyles.header} pb-4 pt-4`}>
+      <ul className={`${headerStyles.content} list-default`}>
         <li>
           <nav>
-            <ul className={`${styles.menu} list-default`}>
+            <ul className={`${headerStyles.menu} list-default`}>
               <li>
-                <a href="#" className={styles.menu__link}>
+                <a href="#" className={headerStyles.menu__link}>
                   <BurgerIcon type="primary" />
                   <p className="text text_type_main-default">Конструктор</p>
                 </a>
               </li>
               <li>
-                <a href="#" className={styles.menu__link}>
+                <a href="#" className={headerStyles.menu__link}>
                   <ListIcon type="primary" />
                   <p className="text text_type_main-default">Лента заказов</p>
                 </a>
@@ -31,13 +31,13 @@ const AppHeader = () => {
             </ul>
           </nav>
         </li>
-        <li className={styles.logo__wrapper}>
-          <a href="" className={styles.header__logo}>
+        <li className={headerStyles.logo__wrapper}>
+          <a href="" className={headerStyles.header__logo}>
             <Logo />
           </a>
         </li>
-        <li className={styles.profile}>
-          <a href="#" className={styles.menu__link}>
+        <li className={headerStyles.profile}>
+          <a href="#" className={headerStyles.menu__link}>
             <ProfileIcon type="primary" />
             <p className="text text_type_main-default">Личный кабинет</p>
           </a>
