@@ -26,6 +26,7 @@ const BurgerIngredients = () => {
 
   const handleClick = ref => {
     ref.current.scrollIntoView();
+    ref.current.scrollIntoView({ behavior: 'smooth' });
   };
 
   return (

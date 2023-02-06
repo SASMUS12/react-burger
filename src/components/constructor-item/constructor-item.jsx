@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import { ingredientType } from '../../utils/types';
 import { ConstructorElement, DragIcon } from '@ya.praktikum/react-developer-burger-ui-components';
 import { useDispatch } from 'react-redux';
+import { deleteItem } from "../../services/actions/constructor";
 import itemStyles from './constructor-item.module.css';
 
 const ConstructorItem = ({ data, id, index, moveItemHandler }) => {
@@ -56,9 +57,9 @@ const ConstructorItem = ({ data, id, index, moveItemHandler }) => {
 
   drag(drop(ref));
 
-  const deleteItem = () => {
+  function removeItem() {
     dispatch(deleteItem(data));
-  };
+  }
 
   return (
     <div
@@ -76,7 +77,7 @@ const ConstructorItem = ({ data, id, index, moveItemHandler }) => {
             text={data.name}
             price={data.price}
             thumbnail={data.image}
-            handleClose={deleteItem}
+            handleClose={removeItem}
           />
         </>
       )}

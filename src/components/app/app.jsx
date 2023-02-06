@@ -2,13 +2,10 @@ import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { DndProvider } from 'react-dnd';
-
 import styles from './app.module.css';
-
 import { getIngredients } from '../../services/actions/ingredients';
 import { clearIngredientDetails } from '../../services/actions/ingredient-details';
 import { clearOrderDetails } from '../../services/actions/order';
-
 import AppHeader from '../app-header/app-header';
 import BurgerConstructor from '../burger-constructor/burger-constructor';
 import BurgerIngredients from '../burger-ingredients/burger-ingredients';

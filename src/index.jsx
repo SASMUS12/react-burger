@@ -1,10 +1,9 @@
 import React from 'react';
-import ReactDOM from 'react-dom/client';
-import { createStore } from 'redux';
 import { Provider } from 'react-redux';
-import { applyMiddleware } from 'redux';
-import { rootReducer } from './services/reducers';
+import ReactDOM from 'react-dom/client';
+import { applyMiddleware, createStore } from 'redux';
 import thunk from 'redux-thunk';
+import { rootReducer } from './services/reducers';
 import './index.css';
 import App from './components/app/app';
 import reportWebVitals from './reportWebVitals';

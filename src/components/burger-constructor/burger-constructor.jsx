@@ -116,7 +116,7 @@ const BurgerConstructor = () => {
             type="primary"
             size="large"
             extraClass={`${styles.button} ml-10 mr-4`}
-            onClick={e => openOrderModal(e)}
+            onClick={openOrderModal}
           >
             {isLoading ? <Loader /> : 'Оформить заказ'}
           </Button>
