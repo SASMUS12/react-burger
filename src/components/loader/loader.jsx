@@ -8,6 +8,7 @@ const Loader = () => {
       <span className={styles.circle}></span>
       <span className={styles.circle}></span>
       <span className={styles.circle}></span>
+      <span className={styles.circle}></span>
     </div>
   );
 };
