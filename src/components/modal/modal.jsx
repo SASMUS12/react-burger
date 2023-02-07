@@ -9,8 +9,8 @@ const modalRoot = document.getElementById('react-modals');
 
 const Modal = ({ children, title, closeModal }) => {
   useEffect(() => {
-    const escHendler = event => {
-      if (event.key === 'Escape') {
+    const escHendler = evt => {
+      if (evt.key === 'Escape') {
         closeModal();
       }
     };
@@ -18,7 +18,7 @@ const Modal = ({ children, title, closeModal }) => {
     return () => {
       document.removeEventListener('keydown', escHendler);
     };
-  }, []);
+  }, [closeModal]);
 
   return createPortal(
     <ModalOverlay closeModal={closeModal}>
@@ -39,7 +39,7 @@ const Modal = ({ children, title, closeModal }) => {
 Modal.propTypes = {
   children: PropTypes.node.isRequired,
   title: PropTypes.string,
-  closeModal: PropTypes.func
+  closeModal: PropTypes.func.isRequired
 };
 
 export default Modal;

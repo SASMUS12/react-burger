@@ -1,79 +1,54 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { HTML5Backend } from 'react-dnd-html5-backend';
+import { DndProvider } from 'react-dnd';
 import styles from './app.module.css';
-import PropTypes from 'prop-types';
+import { getIngredients } from '../../services/actions/ingredients';
+import { clearIngredientDetails } from '../../services/actions/ingredient-details';
+import { clearOrderDetails } from '../../services/actions/order';
+import AppHeader from '../app-header/app-header';
 import BurgerConstructor from '../burger-constructor/burger-constructor';
 import BurgerIngredients from '../burger-ingredients/burger-ingredients';
-import AppHeader from '../app-header/app-header';
 import Columns from '../columns/columns';
 import IngredientDetails from '../ingredient-details/ingredient-details';
-import OrderDetails from '../order-details/order-details';
 import Modal from '../modal/modal';
+import OrderDetails from '../order-details/order-details';
 
 function App() {
-  const [ingredients, setIngredients] = useState([]);
-  const [constructorState, setConstructorState] = useState([]);
-  const [isOpened, setOpened] = useState(false);
-  const [ingredientData, setIngredientData] = useState(null);
-
-  const openIngredientDetails = data => {
-    setOpened(true);
-    setIngredientData(data);
-  };
-
-  const openOrderDetails = () => {
-    setOpened(true);
-  };
+  const dispatch = useDispatch();
+  const details = useSelector(store => store.ingredientData.currentIngredient);
+  const orderData = useSelector(store => store.orderData.order);
+  useEffect(() => {
+    dispatch(getIngredients());
+  }, [dispatch]);
 
   const closeModal = () => {
-    setOpened(false);
-    setIngredientData(null);
+    details ? dispatch(clearIngredientDetails()) : dispatch(clearOrderDetails());
   };
-
-  const updateConstructorData = useCallback(ingredientData => {
-    setConstructorState([...constructorState, ingredientData]);
-  });
-
-  async function fetchIngredients() {
-    try {
-      const API_URL = 'https://norma.nomoreparties.space/api/ingredients/';
-      const res = await fetch(API_URL);
-      const data = await res.json();
-      
-      setIngredients(data.data);
-    } catch (err) {
-      console.log(err);
-    }
-  }
-  useEffect(() => {
-    fetchIngredients();
-  }, []);
 
   return (
     <div className={styles.app}>
       <AppHeader />
       <main className={styles.main}>
-        <Columns>
-          <BurgerIngredients
-            ingredients={ingredients}
-            updateConstructor={updateConstructorData}
-            openModal={openIngredientDetails}
-          />
-          <BurgerConstructor data={constructorState} openModal={openOrderDetails} />
-        </Columns>
-        {!!isOpened && !!ingredientData && (
+        <DndProvider backend={HTML5Backend}>
+          <Columns>
+            <BurgerIngredients />
+            <BurgerConstructor />
+          </Columns>
+        </DndProvider>
+        {details && (
           <Modal title="Детали ингредиента" closeModal={closeModal}>
-            <IngredientDetails data={ingredientData} />
+            <IngredientDetails data={details} />
           </Modal>
         )}
-        {!!isOpened && ingredientData === null && (
+        {orderData && (
           <Modal closeModal={closeModal}>
-            <OrderDetails />
+            <OrderDetails orderNumber={orderData.number} />
           </Modal>
         )}
       </main>
     </div>
   );
 }
-
 
 export default App;

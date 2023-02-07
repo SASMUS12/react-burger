@@ -5,8 +5,7 @@ import {
   BurgerIcon,
   ListIcon,
   ProfileIcon,
-  Logo,
-  Box
+  Logo
 } from '@ya.praktikum/react-developer-burger-ui-components';
 
 const AppHeader = () => {
@@ -32,7 +31,7 @@ const AppHeader = () => {
           </nav>
         </li>
         <li className={styles.logo__wrapper}>
-          <a href="" className={styles.header__logo}>
+          <a href="#" className={styles.header__logo}>
             <Logo />
           </a>
         </li>

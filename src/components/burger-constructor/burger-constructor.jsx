@@ -1,10 +1,56 @@
-import React, { useMemo } from 'react';
-import PropTypes from 'prop-types';
-import ConstructorItem from '../constructor-item/constructor-item';
-import styles from './burger-constructor.module.css';
-import { CurrencyIcon, Button } from '@ya.praktikum/react-developer-burger-ui-components';
+import React, { useMemo, useCallback } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { useDrop } from 'react-dnd';
+import update from 'immutability-helper';
+import {
+  CurrencyIcon,
+  Button,
+  ConstructorElement
+} from '@ya.praktikum/react-developer-burger-ui-components';
+import { addItem, addBun, updateConstructor } from '../../services/actions/constructor';
+import { createOrder } from '../../services/actions/order';
 
-const BurgerConstructor = ({ data, openModal }) => {
+import ConstructorItem from '../constructor-item/constructor-item';
+import Loader from '../loader/loader';
+
+import styles from './burger-constructor.module.css';
+import itemStyles from '../constructor-item/constructor-item.module.css';
+
+const BurgerConstructor = () => {
+  const data = useSelector(store => store.constructorData.constructorItems);
+  const isLoading = useSelector(store => store.orderData.createOrderRequest);
+  const dispatch = useDispatch();
+
+  const openOrderModal = e => {
+    e.preventDefault();
+    const dataIds = data.map(item => [item._id]);
+    dispatch(createOrder(dataIds));
+  };
+
+  const [{ isOver }, dropRef] = useDrop({
+    accept: 'ingredient',
+    drop(newItem) {
+      newItem.type === 'bun' ? dispatch(addBun(newItem)) : dispatch(addItem(newItem));
+    },
+    collect: monitor => ({
+      isOver: monitor.isOver()
+    })
+  });
+
+  const moveItemHandler = useCallback(
+    (dragIndex, hoverIndex) => {
+      const dragCard = data[dragIndex];
+      const newData = update(data, {
+        $splice: [
+          [dragIndex, 1],
+          [hoverIndex, 0, dragCard]
+        ]
+      });
+      dispatch(updateConstructor(newData));
+    },
+    [data, dispatch]
+  );
+
   const getPrice = useMemo(() => {
     return Array.from(data).reduce((acc, i) => {
       return i.type === 'bun' ? acc + i.price * 2 : acc + i.price;
@@ -12,37 +58,56 @@ const BurgerConstructor = ({ data, openModal }) => {
   }, [data]);
 
   return (
-    data.length > 0 && (
-      <section className={`${styles.wrapper} mt-25 pl-4`}>
-        {data.map(item => {
-          return (
-            item.type === 'bun' && (
-              <ConstructorItem data={item} key={item._id} text={`${item.name} (верх)`} type="top" />
-            )
-          );
-        })}
-        <ul className={`${styles.list} list-default my-scroll pr-2`}>
-          {data.map(
-            item =>
-              item.type !== 'bun' && (
-                <li key={item._id}>
-                  <ConstructorItem data={item} />
-                </li>
-              )
-          )}
-        </ul>
-        {data.map(item => {
-          return (
-            item.type === 'bun' && (
-              <ConstructorItem
-                data={item}
-                key={item._id}
-                text={`${item.name}+ (низ)`}
-                type="bottom"
+    <section
+      className={`${styles.wrapper} ${isOver && styles.wrapper_isOver} mt-20 pl-4`}
+      ref={dropRef}
+    >
+      {data.map(item => {
+        return (
+          item.type === 'bun' && (
+            <div className={itemStyles.wrapper} key={item._id}>
+              <ConstructorElement
+                isLocked={true}
+                thumbnail={item.image}
+                price={item.price}
+                type="top"
+                text={`${item.name} (верх)`}
               />
+            </div>
+          )
+        );
+      })}
+      <ul className={`${styles.list} list-default my-scroll pr-2`}>
+        {data.map(
+          (item, i) =>
+            item.type !== 'bun' && (
+              <li key={`${item.uuid}`}>
+                <ConstructorItem
+                  data={item}
+                  id={item._id}
+                  index={i}
+                  moveItemHandler={moveItemHandler}
+                />
+              </li>
             )
-          );
-        })}
+        )}
+      </ul>
+      {data.map(item => {
+        return (
+          item.type === 'bun' && (
+            <div className={itemStyles.wrapper} key={item._id}>
+              <ConstructorElement
+                isLocked={true}
+                thumbnail={item.image}
+                price={item.price}
+                type="bottom"
+                text={`${item.name} (низ)`}
+              />
+            </div>
+          )
+        );
+      })}
+      {data.length > 0 && (
         <div className={`${styles.checkout} mt-6`}>
           <p className="text text_type_digits-medium mr-2">{getPrice}</p>
           <CurrencyIcon type="primary" />
@@ -50,20 +115,15 @@ const BurgerConstructor = ({ data, openModal }) => {
             htmlType="button"
             type="primary"
             size="large"
-            extraClass="ml-10 mr-4"
-            onClick={openModal}
+            extraClass={`${styles.button} ml-10 mr-4`}
+            onClick={openOrderModal}
           >
-            Оформить заказ
+            {isLoading ? <Loader /> : 'Оформить заказ'}
           </Button>
         </div>
-      </section>
-    )
+      )}
+    </section>
   );
-};
-
-BurgerConstructor.propTypes = {
-  data: PropTypes.arrayOf(PropTypes.object).isRequired,
-  openModal: PropTypes.func
 };
 
 export default BurgerConstructor;
