@@ -47,7 +47,7 @@ const Ingredient = ({ data }) => {
 };
 
 Ingredient.propTypes = {
-  data: PropTypes.shape(ingredientType).isRequired
+  data: ingredientType.isRequired
 };
 
 export default Ingredient;

@@ -86,7 +86,7 @@ const ConstructorItem = ({ data, id, index, moveItemHandler }) => {
 };
 
 ConstructorItem.propTypes = {
-  data: PropTypes.shape(ingredientType).isRequired,
+  data: ingredientType.isRequired,
   id: PropTypes.string.isRequired,
   index: PropTypes.number.isRequired,
   moveItemHandler: PropTypes.func.isRequired
