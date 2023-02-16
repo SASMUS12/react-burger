@@ -1,77 +1,160 @@
-import React, { useRef } from 'react';
-import { useInView } from 'react-intersection-observer';
-
-import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
-import IngredientsGrid from '../ingredients-grid/ingredients-grid';
+import React, {useState, useRef, useMemo} from 'react';
+import { useSelector } from 'react-redux';
+import { Link, useLocation } from 'react-router-dom';
 import styles from './burger-ingredients.module.css';
+import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
+import IngredientCard from '../ingredient-card/ingredient-card';
 
 const BurgerIngredients = () => {
-  const rootRef = useRef(null);
-  const bunRef = useRef(null);
+  const bunsRef = useRef(null);
+  const saucesRef = useRef(null);
   const mainRef = useRef(null);
-  const sauceRef = useRef(null);
+  const containerRef = useRef(null);
+  const location = useLocation();
+  const [currentTab, setCurrentTab] = useState('Булки');
 
-  const [inViewBunRef, bunIsInView] = useInView({
-    threshold: 0.15,
-    root: rootRef.current
-  });
-  const [inViewMainRef, mainIsInView] = useInView({
-    threshold: 0.5,
-    root: rootRef.current
-  });
-  const [inViewSauceRef, sauceIsInView] = useInView({
-    threshold: 0.2,
-    root: rootRef.current
-  });
-
-  const handleClick = ref => {
-    ref.current.scrollIntoView();
-    ref.current.scrollIntoView({ behavior: 'smooth' });
+  const setCurrent = event => {
+    let tabToScroll;
+    switch (event) {
+      case 'Булки':
+        tabToScroll = bunsRef;
+        break;
+      case 'Соусы':
+        tabToScroll = saucesRef;
+        break;
+      case 'Начинки':
+        tabToScroll = mainRef;
+        break;
+      default:
+        break;
+    }
+    tabToScroll.current.scrollIntoView({ behavior: 'smooth' });
+    setCurrentTab(event);
   };
 
+  const handlerScroll = () => {
+    const containerY = containerRef.current.getBoundingClientRect().y;
+    const bunsOffset = Math.abs(bunsRef.current.getBoundingClientRect().y - containerY);
+    const saucesOffset = Math.abs(saucesRef.current.getBoundingClientRect().y - containerY);
+    const mainOffset = Math.abs(mainRef.current.getBoundingClientRect().y - containerY);
+
+    if (bunsOffset < saucesOffset && bunsOffset < mainOffset) setCurrentTab('Булки');
+    if (saucesOffset < bunsOffset && saucesOffset < mainOffset) setCurrentTab('Соусы');
+    if (mainOffset < bunsOffset && mainOffset < saucesOffset) setCurrentTab('Начинки');
+  };
+
+  const ingredients = useSelector(store => store.burgerConstructorReducer.allIngredients);
+
+  const bunArray = useMemo(
+    () => ingredients.filter(item => item.type === 'bun'),
+    [ingredients]
+  );
+  const sauceArray = useMemo(
+    () => ingredients.filter(item => item.type === 'sauce'),
+    [ingredients]
+  );
+  const mainArray = useMemo(
+    () => ingredients.filter(item => item.type === 'main'),
+    [ingredients]
+  );
+
   return (
-    <section className={styles.section}>
-      <h1 className={`${styles.heading} text text_type_main-large mb-5`}>Соберите бургер</h1>
-      <div className={styles.tabs}>
-        <Tab value="one" active={bunIsInView} onClick={() => handleClick(bunRef)}>
-          Булки
-        </Tab>
-        <Tab
-          value="two"
-          active={sauceIsInView && !bunIsInView && !mainIsInView}
-          onClick={() => handleClick(sauceRef)}
+    <>
+      <div className="pt-10 pl-5">
+        <h1 className="text text_type_main-large">Соберите бургер</h1>
+        <div className={`${styles.ingredientsTabs} pt-5 pb-10`}>
+          <Tab value="Булки" active={currentTab === 'Булки'} onClick={setCurrent}>
+            Булки
+          </Tab>
+          <Tab value="Соусы" active={currentTab === 'Соусы'} onClick={setCurrent}>
+            Соусы
+          </Tab>
+          <Tab value="Начинки" active={currentTab === 'Начинки'} onClick={setCurrent}>
+            Начинки
+          </Tab>
+        </div>
+        <div
+          className={styles.ingredientsContainer}
+          ref={containerRef}
+          onScroll={handlerScroll}
         >
-          Соусы
-        </Tab>
-        <Tab
-          value="three"
-          active={mainIsInView || (!bunIsInView && !sauceIsInView)}
-          onClick={() => handleClick(mainRef)}
-        >
-          Начинки
-        </Tab>
-      </div>
-      <div className={`${styles.wrapper} mt-10 pr-2 my-scroll`} ref={rootRef}>
-        <div ref={inViewBunRef}>
-          <h2 className={`${styles.heading} text text_type_main-medium`} ref={bunRef}>
+          <h2 className="text text_type_main-medium" ref={bunsRef}>
             Булки
           </h2>
-          <IngredientsGrid type={'bun'} />
-        </div>
-        <div ref={inViewSauceRef}>
-          <h2 className={`${styles.heading} text text_type_main-medium`} ref={sauceRef}>
+          <ul className={`${styles.ingredientsGroupList} pt-6 pb-8 pl-4 pr-4`}>
+            {bunArray.map(item => (
+              <Link
+                to={{
+                  pathname: '/ingredients/' + item._id,
+                  state: { background: location }
+                }}
+                className={styles.ingredientListItem}
+                key={item._id}
+              >
+                <li>
+                  <IngredientCard
+                    id={item._id}
+                    name={item.name}
+                    price={item.price}
+                    image={item.image}
+                    type={item.type}
+                  />
+                </li>
+              </Link>
+            ))}
+          </ul>
+          <h2 className="text text_type_main-medium" ref={saucesRef}>
             Соусы
           </h2>
-          <IngredientsGrid type={'sauce'} />
-        </div>
-        <div ref={inViewMainRef}>
-          <h2 className={`${styles.heading} text text_type_main-medium`} ref={mainRef}>
+          <ul className={`${styles.ingredientsGroupList} pt-6 pb-8 pl-4 pr-4`}>
+            {sauceArray.map(item => (
+              <Link
+                to={{
+                  pathname: '/ingredients/' + item._id,
+                  state: { background: location }
+                }}
+                className={styles.ingredientListItem}
+                key={item._id}
+              >
+                <li>
+                  <IngredientCard
+                    id={item._id}
+                    name={item.name}
+                    price={item.price}
+                    image={item.image}
+                  />
+                </li>
+              </Link>
+            ))}
+          </ul>
+
+          <h2 className="text text_type_main-medium" ref={mainRef}>
             Начинки
           </h2>
-          <IngredientsGrid type={'main'} />
+          <ul className={`${styles.ingredientsGroupList} pt-6 pb-8 pl-4 pr-4`}>
+            {mainArray.map(item => (
+              <Link
+                to={{
+                  pathname: '/ingredients/' + item._id,
+                  state: { background: location }
+                }}
+                className={styles.ingredientListItem}
+                key={item._id}
+              >
+                <li>
+                  <IngredientCard
+                    id={item._id}
+                    name={item.name}
+                    price={item.price}
+                    image={item.image}
+                  />
+                </li>
+              </Link>
+            ))}
+          </ul>
         </div>
       </div>
-    </section>
+    </>
   );
 };
 

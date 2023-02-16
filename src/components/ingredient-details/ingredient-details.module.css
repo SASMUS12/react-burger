@@ -1,20 +1,23 @@
-.wrapper {
+.ingredientDetailsContainer {
+  width: 520px;
+  margin: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-.value {
-  display: flex;
+.ingredientDetailsItems {
   gap: 20px;
+  width: 100%;
+  display: flex;
   justify-content: space-between;
-  align-items: flex-start;
 }
 
-.value__item {
-  display: flex;
-  min-width: 118px;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
+.ingredientDetailsItem {
+  text-align: center;
+  flex: 1;
+}
+
+.ingredientDetailsName {
+  text-align: center;
 }

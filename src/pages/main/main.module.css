@@ -1,0 +1,14 @@
+.main {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+}
+
+.mainSection {
+  width: 620px;
+}
+
+.main-section:nth-child(2) {
+  width: 640px;
+}

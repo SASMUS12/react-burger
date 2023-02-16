@@ -1,54 +1,128 @@
-import React, { useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { HTML5Backend } from 'react-dnd-html5-backend';
-import { DndProvider } from 'react-dnd';
+import React from 'react';
 import styles from './app.module.css';
-import { getIngredients } from '../../services/actions/ingredients';
-import { clearIngredientDetails } from '../../services/actions/ingredient-details';
-import { clearOrderDetails } from '../../services/actions/order';
+import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import AppHeader from '../app-header/app-header';
-import BurgerConstructor from '../burger-constructor/burger-constructor';
-import BurgerIngredients from '../burger-ingredients/burger-ingredients';
-import Columns from '../columns/columns';
-import IngredientDetails from '../ingredient-details/ingredient-details';
 import Modal from '../modal/modal';
-import OrderDetails from '../order-details/order-details';
+import IngredientDetails from '../ingredient-details/ingredient-details';
+import { LoginPage } from '../../pages/login/login';
+import { RegisterPage } from '../../pages/register/register';
+import { ForgotPasswordPage } from '../../pages/forgot-password/forgot-password';
+import { ResetPasswordPage } from '../../pages/reset-password/reset-password';
+import { ProfilePage } from '../../pages/profile/profile';
+import { NotFoundPage } from '../../pages/not-found-page/not-found-page';
+import { MainPage } from '../../pages/main/main';
+import { ProtectedRoute } from '../protected-route/protected-route';
+import { getIngredients } from '../../services/action-creators/burgerConstructorActionCreators';
+import { getCookie } from '../../utils/cookies';
+import { getUser } from '../../services/action-creators/userActionCreators';
 
-function App() {
+const App = () => {
   const dispatch = useDispatch();
-  const details = useSelector(store => store.ingredientData.currentIngredient);
-  const orderData = useSelector(store => store.orderData.order);
-  useEffect(() => {
+
+  const { isLoading, error, allIngredients } = useSelector(store => store.burgerConstructorReducer);
+
+  const location = useLocation();
+  const background = location.state && location.state.background;
+  const navigate = useNavigate();
+
+  React.useEffect(() => {
+    if (getCookie('accessToken')) {
+      dispatch(getUser());
+    }
     dispatch(getIngredients());
   }, [dispatch]);
 
-  const closeModal = () => {
-    details ? dispatch(clearIngredientDetails()) : dispatch(clearOrderDetails());
-  };
+  if (isLoading) {
+    return <h1>Загрузка...</h1>;
+  }
+
+  if (!isLoading && error.length > 0) {
+    return <h1>Ошибка</h1>;
+  }
+
+  if (!isLoading && allIngredients.length === 0) {
+    return <h1>Нет ингредиентов</h1>;
+  }
 
   return (
-    <div className={styles.app}>
+    <>
       <AppHeader />
-      <main className={styles.main}>
-        <DndProvider backend={HTML5Backend}>
-          <Columns>
-            <BurgerIngredients />
-            <BurgerConstructor />
-          </Columns>
-        </DndProvider>
-        {details && (
-          <Modal title="Детали ингредиента" closeModal={closeModal}>
-            <IngredientDetails data={details} />
-          </Modal>
-        )}
-        {orderData && (
-          <Modal closeModal={closeModal}>
-            <OrderDetails orderNumber={orderData.number} />
-          </Modal>
-        )}
-      </main>
-    </div>
+      <Routes location={background || location}>
+        <Route
+          path="/login"
+          element={
+            <ProtectedRoute unAuthorizedOnly={true}>
+              <LoginPage />
+            </ProtectedRoute>
+          }
+        ></Route>
+        <Route
+          path="/register"
+          exact={true}
+          element={
+            <ProtectedRoute unAuthorizedOnly={true}>
+              <RegisterPage />
+            </ProtectedRoute>
+          }
+        ></Route>
+        <Route
+          path="/forgot-password"
+          exact={true}
+          element={
+            <ProtectedRoute unAuthorizedOnly={true}>
+              <ForgotPasswordPage />
+            </ProtectedRoute>
+          }
+        ></Route>
+        <Route
+          path="/reset-password"
+          exact={true}
+          element={
+            <ProtectedRoute unAuthorizedOnly={true}>
+              <ResetPasswordPage />
+            </ProtectedRoute>
+          }
+        ></Route>
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute unAuthorizedOnly={false}>
+              <ProfilePage />
+            </ProtectedRoute>
+          }
+        ></Route>
+        <Route
+          path="/ingredients/:id"
+          exact={true}
+          element={
+            <div className={styles.ingredient}>
+              <h2 className="text text_type_main-large">Детали ингредиента</h2>
+              <IngredientDetails />
+            </div>
+          }
+        ></Route>
+        <Route path="/" exact={true} element={<MainPage />}></Route>
+        <Route path="*" element={<NotFoundPage />}></Route>
+      </Routes>
+      {background && (
+        <Routes>
+          (
+          <Route path="/ingredients/:id" exact={true}>
+            <Modal
+              title="Детали ингредиента"
+              onClose={() => {
+                navigate({ pathname: '/' });
+              }}
+            >
+              <IngredientDetails />
+            </Modal>
+          </Route>
+          )
+        </Routes>
+      )}
+    </>
   );
-}
+};
 
 export default App;

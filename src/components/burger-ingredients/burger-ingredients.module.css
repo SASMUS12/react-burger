@@ -1,17 +1,41 @@
-.heading {
-  text-align: left;
+::-webkit-scrollbar {
+  width: 10px;
 }
 
-.wrapper {
-  box-sizing: border-box;
-  max-height: calc(100vh - 336px);
-  overflow-y: auto;
+::-webkit-scrollbar-track {
+  background: #40404b;
 }
 
-.tabs {
+::-webkit-scrollbar-thumb {
+  background: #8585AD;
+}
+
+.ingredientsTabs {
   display: flex;
 }
 
-.section {
-  min-height: 100%;
+.ingredientsContainer {
+  height: 600px;
+  overflow-y: auto;
+}
+
+.ingredientsGroupList {
+  margin: 0;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 24px;
+  list-style-type: none;
+}
+
+.ingredientListItem {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  flex: 1 0 auto;
+  max-width: 272px;
+  cursor: pointer;
+  color: #fff;
 }

@@ -1,49 +1,48 @@
 import React from 'react';
-import styles from './app-header.module.css';
-
-import {
-  BurgerIcon,
-  ListIcon,
-  ProfileIcon,
-  Logo
-} from '@ya.praktikum/react-developer-burger-ui-components';
+import styles from './app-header.module.css'
+import { BurgerIcon, ListIcon, Logo, ProfileIcon } from '@ya.praktikum/react-developer-burger-ui-components'
+import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 const AppHeader = () => {
-  return (
-    <header className={`${styles.header} pb-4 pt-4`}>
-      <ul className={`${styles.content} list-default`}>
-        <li>
-          <nav>
-            <ul className={`${styles.menu} list-default`}>
-              <li>
-                <a href="#" className={styles.menu__link}>
-                  <BurgerIcon type="primary" />
-                  <p className="text text_type_main-default">Конструктор</p>
-                </a>
-              </li>
-              <li>
-                <a href="#" className={styles.menu__link}>
-                  <ListIcon type="primary" />
-                  <p className="text text_type_main-default">Лента заказов</p>
-                </a>
-              </li>
-            </ul>
-          </nav>
-        </li>
-        <li className={styles.logo__wrapper}>
-          <a href="#" className={styles.header__logo}>
-            <Logo />
-          </a>
-        </li>
-        <li className={styles.profile}>
-          <a href="#" className={styles.menu__link}>
-            <ProfileIcon type="primary" />
-            <p className="text text_type_main-default">Личный кабинет</p>
-          </a>
-        </li>
-      </ul>
+
+  const { userName, isAuthenticated } = useSelector(store => store.userReducer);
+
+  return(
+    <header className={styles.header}>
+      <div className={`${styles.headerContainer} pt-4 pb-4`}>
+        <nav className={styles.linksBlock}>
+          <div className="pt-4 pr-5 pb-4 pl-5">
+          <Link to="/" className={styles.menu__link}>
+            <BurgerIcon type="primary" />
+            <span className="text text_type_main-default">Конструктор</span>
+          </Link>
+          </div>
+          <div className="pt-4 pr-5 pb-4 pl-5">
+            <ListIcon type="secondary" />
+            <span className="text text_type_main-default text_color_inactive">Лента заказов</span>
+          </div>
+        </nav>
+        <div className={styles.logoBlock}>
+          <Link to="/">
+              <Logo />
+          </Link>
+        </div>
+        <div className={styles.personalBlock}>
+          <div className="pt-4 pr-5 pb-4 pl-5">
+            <ProfileIcon type="secondary" />
+            <Link to="/profile">
+              {(isAuthenticated && userName)
+                ? <span className="text text_type_main-default text_color_inactive">{userName}</span>
+                : <span className="text text_type_main-default text_color_inactive">Личный кабинет</span>
+              }
+            </Link>
+          </div>
+        </div>
+      </div>
     </header>
-  );
-};
+  )
+
+}
 
 export default AppHeader;
