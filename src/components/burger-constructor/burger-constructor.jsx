@@ -1,128 +1,131 @@
-import React, { useMemo, useCallback } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { useDrop } from 'react-dnd';
-import update from 'immutability-helper';
-import {
-  CurrencyIcon,
-  Button,
-  ConstructorElement
-} from '@ya.praktikum/react-developer-burger-ui-components';
-import { addItem, addBun, updateConstructor } from '../../services/actions/constructor';
-import { createOrder } from '../../services/actions/order';
-
-import ConstructorItem from '../constructor-item/constructor-item';
-import Loader from '../loader/loader';
-
+import React, { useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useDrop } from 'react-dnd/dist/hooks/useDrop';
 import styles from './burger-constructor.module.css';
-import itemStyles from '../constructor-item/constructor-item.module.css';
+import OrderDetails from '../order-details/order-details';
+import Modal from '../modal/modal';
+import {
+  ConstructorElement,
+  CurrencyIcon,
+  Button
+} from '@ya.praktikum/react-developer-burger-ui-components';
+import { BurgerConstructorElement } from '../burger-constructor-element/burger-constructor-element';
+import { useDispatch, useSelector } from 'react-redux';
+import { handleRemoveItem } from '../../services/actions/constructor.js';
+import {
+  sendOrder,
+  addIngredientToConstructor,
+  changeIngredientsSort,
+  addBunToConstructor
+} from '../../services/action-creators/burgerConstructorActionCreators';
 
 const BurgerConstructor = () => {
-  const data = useSelector(store => store.constructorData.constructorItems);
-  const isLoading = useSelector(store => store.orderData.createOrderRequest);
+  const [isModalActive, setModalActive] = React.useState(false);
+  const allIngredients = useSelector(store => store.burgerConstructorReducer.allIngredients);
+  const constructorIngredients = useSelector(
+    store => store.burgerConstructorReducer.constructorIngredients
+  );
+  const isAuthenticated = useSelector(store => store.userReducer.isAuthenticated);
+  const bun = useSelector(store => store.burgerConstructorReducer.constructorBun);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  const openOrderModal = e => {
-    e.preventDefault();
-    const dataIds = data.map(item => [item._id]);
-    dispatch(createOrder(dataIds));
+  const handleMakeOrderClick = () => {
+    if (!isAuthenticated) {
+      navigate({ pathname: '/login' });
+    } else {
+      const orderIngredients = constructorIngredients.concat(bun);
+      dispatch(sendOrder(orderIngredients));
+      setModalActive(true);
+    }
   };
 
-  const [{ isOver }, dropRef] = useDrop({
-    accept: 'ingredient',
-    drop(newItem) {
-      newItem.type === 'bun' ? dispatch(addBun(newItem)) : dispatch(addItem(newItem));
-    },
-    collect: monitor => ({
-      isOver: monitor.isOver()
-    })
-  });
-
-  const moveItemHandler = useCallback(
-    (dragIndex, hoverIndex) => {
-      const dragCard = data[dragIndex];
-      const newData = update(data, {
-        $splice: [
-          [dragIndex, 1],
-          [hoverIndex, 0, dragCard]
-        ]
-      });
-      dispatch(updateConstructor(newData));
-    },
-    [data, dispatch]
-  );
-
-  const getPrice = useMemo(() => {
-    return Array.from(data).reduce((acc, i) => {
+  const allCost = useMemo(() => {
+    return Array.from(constructorIngredients).reduce((acc, i) => {
       return i.type === 'bun' ? acc + i.price * 2 : acc + i.price;
     }, 0);
-  }, [data]);
+  }, [constructorIngredients]);
+
+  const handleCloseModal = () => {
+    setModalActive(false);
+  };
+
+  const [, dropTarget] = useDrop({
+    accept: 'ingredient',
+    drop(itemId) {
+      const item = allIngredients.find(item => item._id === itemId.id);
+      item.type === 'bun'
+        ? dispatch(addBunToConstructor(item))
+        : dispatch(addIngredientToConstructor(item));
+    }
+  });
+
+  const moveIngredient = (dragIndex, hoverIndex, constructorIngredients) => {
+    dispatch(changeIngredientsSort(dragIndex, hoverIndex, constructorIngredients));
+  };
 
   return (
-    <section
-      className={`${styles.wrapper} ${isOver && styles.wrapper_isOver} mt-20 pl-4`}
-      ref={dropRef}
-    >
-      {data.map(item => {
-        return (
-          item.type === 'bun' && (
-            <div className={itemStyles.wrapper} key={item._id}>
-              <ConstructorElement
-                isLocked={true}
-                thumbnail={item.image}
-                price={item.price}
-                type="top"
-                text={`${item.name} (верх)`}
-              />
-            </div>
-          )
-        );
-      })}
-      <ul className={`${styles.list} list-default my-scroll pr-2`}>
-        {data.map(
-          (item, i) =>
-            item.type !== 'bun' && (
-              <li key={`${item.uuid}`}>
-                <ConstructorItem
-                  data={item}
-                  id={item._id}
-                  index={i}
-                  moveItemHandler={moveItemHandler}
-                />
-              </li>
-            )
+    <>
+      <div className={`${styles.container} mt-25 mb-8 `} ref={dropTarget}>
+        {bun && (
+          <div className="pb-4 pl-5">
+            <ConstructorElement
+              text={`${bun.name} (верх)`}
+              price={bun.price}
+              type="top"
+              isLocked={true}
+              thumbnail={bun.image}
+            />
+          </div>
         )}
-      </ul>
-      {data.map(item => {
-        return (
-          item.type === 'bun' && (
-            <div className={itemStyles.wrapper} key={item._id}>
-              <ConstructorElement
-                isLocked={true}
-                thumbnail={item.image}
-                price={item.price}
-                type="bottom"
-                text={`${item.name} (низ)`}
+        <div className={`${styles.items} pr-4`}>
+          {constructorIngredients.map((item, index) => (
+            <div key={item.constructorId} className={styles.item}>
+              <BurgerConstructorElement
+                ingredient={item}
+                index={index}
+                handleClose={() => handleRemoveItem(item.constructorId)}
+                moveIngredient={moveIngredient}
               />
             </div>
-          )
-        );
-      })}
-      {data.length > 0 && (
-        <div className={`${styles.checkout} mt-6`}>
-          <p className="text text_type_digits-medium mr-2">{getPrice}</p>
+          ))}
+        </div>
+        {bun && (
+          <div className="pt-4 pl-5">
+            <ConstructorElement
+              text={`${bun.name} (низ)`}
+              price={bun.price}
+              type="bottom"
+              isLocked={true}
+              thumbnail={bun.image}
+            />
+          </div>
+        )}
+      </div>
+      <div className={styles.order}>
+        <div className={`${styles.orderAll} mr-10 `}>
+          <p className="text text_type_digits-medium">{allCost}</p>
           <CurrencyIcon type="primary" />
+        </div>
+        <div className={styles.submit}>
           <Button
             htmlType="button"
             type="primary"
             size="large"
-            extraClass={`${styles.button} ml-10 mr-4`}
-            onClick={openOrderModal}
+            onClick={handleMakeOrderClick}
+            disabled={constructorIngredients.length === 0 && !bun ? true : false}
           >
-            {isLoading ? <Loader /> : 'Оформить заказ'}
+            Оформить заказ
           </Button>
         </div>
+      </div>
+
+      {isModalActive && (
+        <Modal onClose={handleCloseModal}>
+          <OrderDetails />
+        </Modal>
       )}
-    </section>
+    </>
   );
 };
 

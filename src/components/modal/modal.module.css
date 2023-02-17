@@ -1,14 +1,20 @@
-.wrapper {
+.modalContainer {
+  width: 720px;
+  background: #1C1C21;
   box-sizing: border-box;
   border-radius: 40px;
-  min-width: 720px;
-  height: auto;
-  background-color: rgba(28, 28, 33, 1);
   position: relative;
 }
 
-.header {
+.headerContainer {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  height: 64px;
+}
+
+.closeModalButton {
+  position: absolute;
+  top: 60px;
+  right: 40px;
+  cursor: pointer;
 }

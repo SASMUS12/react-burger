@@ -1,0 +1,10 @@
+.notFoundWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-top: 50px;
+}
+
+.notFound {
+  text-align: center;
+}
