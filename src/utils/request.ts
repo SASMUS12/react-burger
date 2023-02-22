@@ -1,11 +1,12 @@
-import { baseUrl } from './api';
+import { BASE_URL } from './api';
 import { setCookie } from './cookies';
 
-export function request(url, options) {
-  return fetch(url, options).then(checkResponse);
+export async function request(url: string, options?: RequestInit) {
+  const res = await fetch(url, options);
+  return checkResponse(res);
 }
 
-function checkResponse(res) {
+function checkResponse(res: Response): Promise<any> {
   if (res.ok) {
     return res.json();
   }
@@ -13,7 +14,7 @@ function checkResponse(res) {
 }
 
 export const refreshToken = () => {
-  return fetch(baseUrl + '/auth/token', {
+  return fetch(BASE_URL + '/auth/token', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -24,11 +25,14 @@ export const refreshToken = () => {
   }).then(checkResponse);
 };
 
-export const requestWithRefresh = async (url, options) => {
+export const requestWithRefresh = async (
+  url: string,
+  options: RequestInit & { headers: { Authorization: string } }
+) => {
   try {
     const res = await fetch(url, options);
     return await checkResponse(res);
-  } catch (err) {
+  } catch (err: any) {
     if (err.message === 'jwt expired') {
       const refreshData = await refreshToken();
       if (!refreshData.success) {
@@ -36,7 +40,7 @@ export const requestWithRefresh = async (url, options) => {
       }
       localStorage.setItem('refreshToken', refreshData.refreshToken);
       setCookie('accessToken', refreshData.accessToken);
-      options.headers.authorization = refreshData.accessToken;
+      options.headers.Authorization = refreshData.accessToken;
       const res = await fetch(url, options);
       return await checkResponse(res);
     } else {

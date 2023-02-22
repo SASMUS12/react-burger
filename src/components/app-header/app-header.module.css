@@ -1,5 +1,5 @@
 .header {
-  background: #1C1C21;
+  background: #1c1c21;
 }
 
 .headerContainer {
@@ -25,7 +25,8 @@
   justify-content: end;
 }
 
-.linksBlock > div, .personalBlock > div {
+.linksBlock > div,
+.personalBlock > div {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -33,19 +34,4 @@
 
 a {
   text-decoration: none;
-}
-
-.menu__link {
-  display: block;
-  display: flex;
-  width: fit-content;
-  justify-content: flex-start;
-  align-items: center;
-  gap: 8px;
-  padding: 16px 20px 16px 20px;
-  color: var(--main-txt-color);
-  text-decoration: none;
-}
-.menu__link_active {
-  color: #8585AD
 }

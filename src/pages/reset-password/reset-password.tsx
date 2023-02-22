@@ -1,27 +1,26 @@
-import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { Link, Navigate } from 'react-router-dom';
+import React, { FC } from 'react';
+import { Link, Redirect } from 'react-router-dom';
 import styles from '../forgot-password/forgot-password.module.css';
 import { Input, PasswordInput, Button } from '@ya.praktikum/react-developer-burger-ui-components';
 import { resetPassword } from '../../services/action-creators/userActionCreators';
-import { useForm } from '../../hooks/useForm';
+import { useForm, useAppDispatch, useAppSelector } from '../../hooks/useForm';
 
-export const ResetPasswordPage = () => {
-  const dispatch = useDispatch();
+export const ResetPasswordPage: FC = () => {
+  const dispatch = useAppDispatch();
   const { values, handleChange } = useForm({
     newPassword: '',
     resetPasswordCode: ''
   });
 
-  const isResettingPassword = useSelector(store => store.userReducer.isResettingPassword);
+  const isResettingPassword = useAppSelector(store => store.userReducer.isResettingPassword);
 
-  const handleResetPasswordRequest = e => {
+  const handleResetPasswordRequest = (e: React.FormEvent) => {
     e.preventDefault();
     dispatch(resetPassword(values.newPassword, values.resetPasswordCode));
   };
 
   if (!isResettingPassword) {
-    return <Navigate to={{ pathname: '/forgot-password' }} />;
+    return <Redirect to={{ pathname: '/forgot-password' }} />;
   }
 
   return (

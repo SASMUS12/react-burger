@@ -1,38 +1,37 @@
-import React, { useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useDrop } from 'react-dnd/dist/hooks/useDrop';
+import React, { useState, FC } from 'react';
 import styles from './burger-constructor.module.css';
 import OrderDetails from '../order-details/order-details';
 import Modal from '../modal/modal';
-import {
-  ConstructorElement,
-  CurrencyIcon,
-  Button
-} from '@ya.praktikum/react-developer-burger-ui-components';
+import { ConstructorElement } from '@ya.praktikum/react-developer-burger-ui-components';
+import { CurrencyIcon } from '@ya.praktikum/react-developer-burger-ui-components';
+import { Button } from '@ya.praktikum/react-developer-burger-ui-components';
 import { BurgerConstructorElement } from '../burger-constructor-element/burger-constructor-element';
-import { useDispatch, useSelector } from 'react-redux';
-import { handleRemoveItem } from '../../services/actions/constructor.js';
+import { useDrop } from 'react-dnd';
 import {
   sendOrder,
   addIngredientToConstructor,
   changeIngredientsSort,
   addBunToConstructor
 } from '../../services/action-creators/burgerConstructorActionCreators';
+import { useHistory } from 'react-router-dom';
+import { TConstructorIngredient, TIngredient } from '../../services/types/index';
+import { useAppDispatch, useAppSelector } from '../../hooks/useForm';
+import { REMOVE_INGREDIENT_FROM_CONSTRUCTOR } from '../../services/actions/burgerConstructorActions';
 
-const BurgerConstructor = () => {
-  const [isModalActive, setModalActive] = React.useState(false);
-  const allIngredients = useSelector(store => store.burgerConstructorReducer.allIngredients);
-  const constructorIngredients = useSelector(
+const BurgerConstructor: FC = () => {
+  const [isModalActive, setModalActive] = useState<boolean>(false);
+  const allIngredients = useAppSelector(store => store.burgerConstructorReducer.allIngredients);
+  const constructorIngredients = useAppSelector(
     store => store.burgerConstructorReducer.constructorIngredients
   );
-  const isAuthenticated = useSelector(store => store.userReducer.isAuthenticated);
-  const bun = useSelector(store => store.burgerConstructorReducer.constructorBun);
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const bun = useAppSelector(store => store.burgerConstructorReducer.constructorBun);
+  const isAuthenticated = useAppSelector(store => store.userReducer.isAuthenticated);
+  const dispatch = useAppDispatch();
+  let history = useHistory();
 
   const handleMakeOrderClick = () => {
     if (!isAuthenticated) {
-      navigate({ pathname: '/login' });
+      history.replace({ pathname: '/login' })
     } else {
       const orderIngredients = constructorIngredients.concat(bun);
       dispatch(sendOrder(orderIngredients));
@@ -40,11 +39,18 @@ const BurgerConstructor = () => {
     }
   };
 
-  const allCost = useMemo(() => {
-    return Array.from(constructorIngredients).reduce((acc, i) => {
-      return i.type === 'bun' ? acc + i.price * 2 : acc + i.price;
-    }, 0);
-  }, [constructorIngredients]);
+  const handleRemoveItem = (constructorId: string) => {
+    dispatch({
+      type: REMOVE_INGREDIENT_FROM_CONSTRUCTOR,
+      payload: constructorId
+    });
+  };
+
+  let allCost = constructorIngredients.reduce((sum: number, currentItem: TIngredient) => {
+    return sum + currentItem.price;
+  }, 0);
+
+  if (bun) allCost += 2 * bun.price;
 
   const handleCloseModal = () => {
     setModalActive(false);
@@ -52,34 +58,42 @@ const BurgerConstructor = () => {
 
   const [, dropTarget] = useDrop({
     accept: 'ingredient',
-    drop(itemId) {
-      const item = allIngredients.find(item => item._id === itemId.id);
+    drop(itemId: { id: string }) {
+      const item = allIngredients.find((item: TIngredient) => item._id === itemId.id);
       item.type === 'bun'
         ? dispatch(addBunToConstructor(item))
         : dispatch(addIngredientToConstructor(item));
     }
   });
 
-  const moveIngredient = (dragIndex, hoverIndex, constructorIngredients) => {
+  const moveIngredient = (
+    dragIndex: number,
+    hoverIndex: number,
+    constructorIngredients: TConstructorIngredient[]
+  ) => {
     dispatch(changeIngredientsSort(dragIndex, hoverIndex, constructorIngredients));
   };
 
   return (
     <>
-      <div className={`${styles.container} mt-25 mb-8 `} ref={dropTarget}>
+      <div
+        className={`${styles.Container} mt-25 mb-8 `}
+        ref={dropTarget}
+      >
         {bun && (
           <div className="pb-4 pl-5">
             <ConstructorElement
-              text={`${bun.name} (верх)`}
-              price={bun.price}
               type="top"
               isLocked={true}
+              text={`${bun.name} (верх)`}
+              price={bun.price}
               thumbnail={bun.image}
             />
           </div>
         )}
+
         <div className={`${styles.items} pr-4`}>
-          {constructorIngredients.map((item, index) => (
+          {constructorIngredients.map((item: TConstructorIngredient, index: number) => (
             <div key={item.constructorId} className={styles.item}>
               <BurgerConstructorElement
                 ingredient={item}
@@ -90,24 +104,26 @@ const BurgerConstructor = () => {
             </div>
           ))}
         </div>
+
         {bun && (
-          <div className="pt-4 pl-5">
+          <div className='pl-8 pr-4'>
             <ConstructorElement
-              text={`${bun.name} (низ)`}
-              price={bun.price}
               type="bottom"
               isLocked={true}
+              text={`${bun.name} (низ)`}
+              price={bun.price}
               thumbnail={bun.image}
             />
           </div>
         )}
       </div>
+
       <div className={styles.order}>
         <div className={`${styles.orderAll} mr-10 `}>
           <p className="text text_type_digits-medium">{allCost}</p>
           <CurrencyIcon type="primary" />
         </div>
-        <div className={styles.submit}>
+        <div className={styles.orderSubmit}>
           <Button
             htmlType="button"
             type="primary"

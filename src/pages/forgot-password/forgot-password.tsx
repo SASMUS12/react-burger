@@ -1,27 +1,26 @@
-import React from 'react';
+import React, { FC } from 'react';
 import styles from './forgot-password.module.css';
-import { Link, Navigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
 import { EmailInput, Button } from '@ya.praktikum/react-developer-burger-ui-components';
 import { forgotPassword } from '../../services/action-creators/userActionCreators';
-import { useForm } from '../../hooks/useForm';
+import { useForm, useAppDispatch, useAppSelector } from '../../hooks/useForm';
+import { Link, Redirect } from 'react-router-dom';
 
-export const ForgotPasswordPage = () => {
-  const dispatch = useDispatch();
+export const ForgotPasswordPage: FC = () => {
+  const dispatch = useAppDispatch();
 
-  const isResettingPassword = useSelector(store => store.userReducer.isResettingPassword);
+  const isResettingPassword = useAppSelector(store => store.userReducer.isResettingPassword);
 
   const { values, handleChange } = useForm({
     email: ''
   });
 
-  const handleForgotPasswordRequest = e => {
+  const handleForgotPasswordRequest = (e: React.FormEvent) => {
     e.preventDefault();
     dispatch(forgotPassword(values.email));
   };
 
   return isResettingPassword ? (
-    <Navigate to="/reset-password" />
+    <Redirect to='/reset-password'/>
   ) : (
     <section className={styles.loginWrapper}>
       <div className={styles.loginForm}>

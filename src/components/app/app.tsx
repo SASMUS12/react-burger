@@ -1,11 +1,10 @@
-import React from 'react';
+import React, { useEffect, FC } from 'react';
 import styles from './app.module.css';
-import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { Route, Switch, useLocation, useHistory } from 'react-router-dom';
 import AppHeader from '../app-header/app-header';
 import Modal from '../modal/modal';
 import IngredientDetails from '../ingredient-details/ingredient-details';
-import { LoginPage } from '../../pages/login/login';
+import { Login } from '../../pages/login/login';
 import { RegisterPage } from '../../pages/register/register';
 import { ForgotPasswordPage } from '../../pages/forgot-password/forgot-password';
 import { ResetPasswordPage } from '../../pages/reset-password/reset-password';
@@ -16,17 +15,20 @@ import { ProtectedRoute } from '../protected-route/protected-route';
 import { getIngredients } from '../../services/action-creators/burgerConstructorActionCreators';
 import { getCookie } from '../../utils/cookies';
 import { getUser } from '../../services/action-creators/userActionCreators';
+import { useAppDispatch, useAppSelector } from '../../hooks/useForm';
+import { Location } from 'history';
 
-const App = () => {
-  const dispatch = useDispatch();
+const App: FC = () => {
+  const dispatch = useAppDispatch();
+  const { isLoading, error, allIngredients } = useAppSelector(
+    store => store.burgerConstructorReducer
+  );
 
-  const { isLoading, error, allIngredients } = useSelector(store => store.burgerConstructorReducer);
-
-  const location = useLocation();
+  const location = useLocation<{ background: Location }>();
   const background = location.state && location.state.background;
-  const navigate = useNavigate();
+  const history = useHistory();
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (getCookie('accessToken')) {
       dispatch(getUser());
     }
@@ -48,78 +50,46 @@ const App = () => {
   return (
     <>
       <AppHeader />
-      <Routes location={background || location}>
-        <Route
-          path="/login"
-          element={
-            <ProtectedRoute unAuthorizedOnly={true}>
-              <LoginPage />
-            </ProtectedRoute>
-          }
-        ></Route>
-        <Route
-          path="/register"
-          exact={true}
-          element={
-            <ProtectedRoute unAuthorizedOnly={true}>
-              <RegisterPage />
-            </ProtectedRoute>
-          }
-        ></Route>
-        <Route
-          path="/forgot-password"
-          exact={true}
-          element={
-            <ProtectedRoute unAuthorizedOnly={true}>
-              <ForgotPasswordPage />
-            </ProtectedRoute>
-          }
-        ></Route>
-        <Route
-          path="/reset-password"
-          exact={true}
-          element={
-            <ProtectedRoute unAuthorizedOnly={true}>
-              <ResetPasswordPage />
-            </ProtectedRoute>
-          }
-        ></Route>
-        <Route
-          path="/profile"
-          element={
-            <ProtectedRoute unAuthorizedOnly={false}>
-              <ProfilePage />
-            </ProtectedRoute>
-          }
-        ></Route>
-        <Route
-          path="/ingredients/:id"
-          exact={true}
-          element={
-            <div className={styles.ingredient}>
-              <h2 className="text text_type_main-large">Детали ингредиента</h2>
-              <IngredientDetails />
-            </div>
-          }
-        ></Route>
-        <Route path="/" exact={true} element={<MainPage />}></Route>
-        <Route path="*" element={<NotFoundPage />}></Route>
-      </Routes>
+      <Switch location={background || location}>
+        <ProtectedRoute unAuthorizedOnly={true} path="/login" exact={true}>
+          <Login />
+        </ProtectedRoute>
+        <ProtectedRoute unAuthorizedOnly={true} path="/register" exact={true}>
+          <RegisterPage />
+        </ProtectedRoute>
+        <ProtectedRoute unAuthorizedOnly={true} path="/forgot-password" exact={true}>
+          <ForgotPasswordPage />
+        </ProtectedRoute>
+        <ProtectedRoute unAuthorizedOnly={true} path="/reset-password" exact={true}>
+          <ResetPasswordPage />
+        </ProtectedRoute>
+        <ProtectedRoute path="/profile" exact={true}>
+          <ProfilePage />
+        </ProtectedRoute>
+        <Route path="/ingredients/:id" exact={true}>
+          <div className={styles.ingredientDetailsPageWrapper}>
+            <h2 className="text text_type_main-large">Детали ингредиента</h2>
+            <IngredientDetails />
+          </div>
+        </Route>
+        <Route path="/" exact={true}>
+          <MainPage />
+        </Route>
+        <Route path="*">
+          <NotFoundPage />
+        </Route>
+      </Switch>
       {background && (
-        <Routes>
-          (
-          <Route path="/ingredients/:id" exact={true}>
-            <Modal
-              title="Детали ингредиента"
-              onClose={() => {
-                navigate({ pathname: '/' });
-              }}
-            >
-              <IngredientDetails />
-            </Modal>
-          </Route>
-          )
-        </Routes>
+        <Route path="/ingredients/:id" exact={true}>
+          <Modal
+            title="Детали ингредиента"
+            onClose={() => {
+              history.replace({ pathname: '/' });
+            }}
+          >
+            <IngredientDetails />
+          </Modal>
+        </Route>
       )}
     </>
   );

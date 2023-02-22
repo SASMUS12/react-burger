@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 import styles from '../forgot-password/forgot-password.module.css';
 import {
   EmailInput,
@@ -7,17 +7,16 @@ import {
 } from '@ya.praktikum/react-developer-burger-ui-components';
 import { Link } from 'react-router-dom';
 import { login } from '../../services/action-creators/userActionCreators';
-import { useDispatch } from 'react-redux';
-import { useForm } from '../../hooks/useForm';
+import { useForm, useAppDispatch } from '../../hooks/useForm';
 
-export const LoginPage = () => {
-  const dispatch = useDispatch();
+export const Login: FC = () => {
+  const dispatch = useAppDispatch();
   const { values, handleChange } = useForm({
     email: '',
     password: ''
   });
 
-  const handleLogin = e => {
+  const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     dispatch(login(values.email, values.password));
   };
