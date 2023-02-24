@@ -2,7 +2,8 @@ import React, { FC } from 'react';
 import styles from './forgot-password.module.css';
 import { EmailInput, Button } from '@ya.praktikum/react-developer-burger-ui-components';
 import { forgotPassword } from '../../services/action-creators/userActionCreators';
-import { useForm, useAppDispatch, useAppSelector } from '../../hooks/useForm';
+import { useForm } from '../../hooks/useForm';
+import { useAppDispatch, useAppSelector } from '../../services/types/index';
 import { Link, Redirect } from 'react-router-dom';
 
 export const ForgotPasswordPage: FC = () => {

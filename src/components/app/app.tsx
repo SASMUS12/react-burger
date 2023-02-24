@@ -15,8 +15,11 @@ import { ProtectedRoute } from '../protected-route/protected-route';
 import { getIngredients } from '../../services/action-creators/burgerConstructorActionCreators';
 import { getCookie } from '../../utils/cookies';
 import { getUser } from '../../services/action-creators/userActionCreators';
-import { useAppDispatch, useAppSelector } from '../../hooks/useForm';
+import { useAppDispatch, useAppSelector } from '../../services/types/index';
 import { Location } from 'history';
+import { FeedPage } from '../../pages/feed/feed';
+import { OrdersPage } from '../../pages/orders/orders';
+import OrderInfo from '../orders-info/order-info';
 
 const App: FC = () => {
   const dispatch = useAppDispatch();
@@ -39,7 +42,7 @@ const App: FC = () => {
     return <h1>Загрузка...</h1>;
   }
 
-  if (!isLoading && error.length > 0) {
+  if (!isLoading && error && error.length > 0) {
     return <h1>Ошибка</h1>;
   }
 
@@ -66,30 +69,71 @@ const App: FC = () => {
         <ProtectedRoute path="/profile" exact={true}>
           <ProfilePage />
         </ProtectedRoute>
+        <ProtectedRoute path="/profile/orders" exact={true}>
+          <OrdersPage />
+        </ProtectedRoute>
         <Route path="/ingredients/:id" exact={true}>
-          <div className={styles.ingredientDetailsPageWrapper}>
+          <div className={styles.pageWrapper}>
             <h2 className="text text_type_main-large">Детали ингредиента</h2>
             <IngredientDetails />
           </div>
         </Route>
+        <Route path="/feed/:number" exact={true}>
+          <div className={styles.pageWrapper}>
+            <OrderInfo />
+          </div>
+        </Route>
+        <ProtectedRoute path="/profile/orders/:number" exact={true}>
+          <div className={styles.pageWrapper}>
+            <OrderInfo />
+          </div>
+        </ProtectedRoute>
         <Route path="/" exact={true}>
           <MainPage />
+        </Route>
+        <Route path="/feed" exact={true}>
+          <FeedPage />
+        </Route>
+        <Route path="/orderdetails" exact={true}>
+          <OrderInfo />
         </Route>
         <Route path="*">
           <NotFoundPage />
         </Route>
       </Switch>
       {background && (
-        <Route path="/ingredients/:id" exact={true}>
-          <Modal
-            title="Детали ингредиента"
-            onClose={() => {
-              history.replace({ pathname: '/' });
-            }}
-          >
-            <IngredientDetails />
-          </Modal>
-        </Route>
+        <>
+          <Route path="/ingredients/:id" exact={true}>
+            <Modal
+              title="Детали ингредиента"
+              onClose={() => {
+                history.replace({ pathname: '/' });
+              }}
+            >
+              <IngredientDetails />
+            </Modal>
+          </Route>
+
+          <Route path="/feed/:number" exact={true}>
+            <Modal
+              onClose={() => {
+                history.replace({ pathname: '/feed/' });
+              }}
+            >
+              <OrderInfo />
+            </Modal>
+          </Route>
+
+          <Route path="/profile/orders/:number" exact={true}>
+            <Modal
+              onClose={() => {
+                history.replace({ pathname: '/profile/orders' });
+              }}
+            >
+              <OrderInfo />
+            </Modal>
+          </Route>
+        </>
       )}
     </>
   );

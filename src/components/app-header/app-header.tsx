@@ -7,7 +7,7 @@ import {
   ProfileIcon
 } from '@ya.praktikum/react-developer-burger-ui-components';
 import { Link } from 'react-router-dom';
-import { useAppSelector } from '../../hooks/useForm';
+import { useAppSelector } from '../../services/types/index';
 
 const AppHeader: FC = () => {
   const { userName, isAuthenticated } = useAppSelector(store => store.userReducer);
@@ -17,12 +17,20 @@ const AppHeader: FC = () => {
       <div className={`${styles.headerContainer} pt-4 pb-4`}>
         <nav className={styles.linksBlock}>
           <div className="pt-4 pr-5 pb-4 pl-5">
-            <BurgerIcon type="primary" />
-            <span className="text text_type_main-default">Конструктор</span>
+            <Link to="/" className={styles.link}>
+              <BurgerIcon type="primary" />
+              <span className={`${styles.text} text text_type_main-default`}>Конструктор</span>
+            </Link>
           </div>
           <div className="pt-4 pr-5 pb-4 pl-5">
-            <ListIcon type="secondary" />
-            <span className="text text_type_main-default text_color_inactive">Лента заказов</span>
+            <Link to="/feed" className={styles.link}>
+              <ListIcon type="secondary" />
+              <span
+                className={`${styles.text} text text_type_main-default text_color_inactive`}
+              >
+                Лента заказов
+              </span>
+            </Link>
           </div>
         </nav>
         <div className={styles.logoBlock}>

@@ -2,11 +2,13 @@ import React, { useState, useEffect, FC } from 'react';
 import styles from './profile.module.css';
 import { Button, Input } from '@ya.praktikum/react-developer-burger-ui-components';
 import { logout, updateUser } from '../../services/action-creators/userActionCreators';
-import { useForm, useAppDispatch, useAppSelector } from '../../hooks/useForm';
+import { useForm } from '../../hooks/useForm';
+import { useAppDispatch, useAppSelector } from '../../services/types/index';
+import { NavLink, useRouteMatch } from 'react-router-dom';
 
 type FormStateType = {
-  name: string;
-  email: string;
+  name: string | null;
+  email: string | null;
 };
 
 export const ProfilePage: FC = () => {
@@ -14,8 +16,13 @@ export const ProfilePage: FC = () => {
     name: '',
     email: ''
   };
+
+  const { url } = useRouteMatch();
+
   const dispatch = useAppDispatch();
+
   const { userName, userLogin, isLoading, error } = useAppSelector(store => store.userReducer);
+
   const { values, handleChange, setValues } = useForm<FormStateType>(initialFormState);
 
   useEffect(() => {
@@ -39,6 +46,7 @@ export const ProfilePage: FC = () => {
 
   const handleSaveProfile = (e: React.FormEvent) => {
     e.preventDefault();
+    //@ts-ignore
     dispatch(updateUser(values.name, values.email));
   };
 
@@ -56,7 +64,7 @@ export const ProfilePage: FC = () => {
     return <h1>Загрузка</h1>;
   }
 
-  if (!isLoading && error.length > 0) {
+  if (!isLoading && error && error.length > 0) {
     return <h1>Ошибка</h1>;
   }
 
@@ -64,7 +72,11 @@ export const ProfilePage: FC = () => {
     <main className={styles.profileMain}>
       <section className={styles.profileMenu}>
         <p className="text text_type_main-medium pt-4 pb-4">Профиль</p>
-        <p className="text text_type_main-medium pt-4 pb-4 text_color_inactive">История заказов</p>
+        <p className="text text_type_main-medium pt-4 pb-4 text_color_inactive">
+          <NavLink to={`${url}/orders`} exact={true}>
+            История заказов
+          </NavLink>
+        </p>
         <a href="/">
           <p
             className="text text_type_main-medium pt-4 pb-4 text_color_inactive"
@@ -86,6 +98,7 @@ export const ProfilePage: FC = () => {
             placeholder={'Имя'}
             onChange={onChange}
             icon={'EditIcon'}
+            //@ts-ignore
             value={values.name}
             name={'name'}
           />
@@ -94,6 +107,7 @@ export const ProfilePage: FC = () => {
             placeholder={'Логин'}
             onChange={onChange}
             icon={'EditIcon'}
+            //@ts-ignore
             value={values.email}
             name={'email'}
           />

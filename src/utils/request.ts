@@ -1,9 +1,8 @@
 import { BASE_URL } from './api';
 import { setCookie } from './cookies';
 
-export async function request(url: string, options?: RequestInit) {
-  const res = await fetch(url, options);
-  return checkResponse(res);
+export function request(url: string, options?: RequestInit) {
+  return fetch(url, options).then(checkResponse);
 }
 
 function checkResponse(res: Response): Promise<any> {
