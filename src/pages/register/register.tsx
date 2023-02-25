@@ -26,11 +26,11 @@ export const RegisterPage: FC = () => {
   };
 
   return (
-    <section className={styles.loginWrapper}>
-      <div className={styles.loginForm}>
-        <h2 className={`${styles.loginHeader} text text_type_main-medium`}>Регистрация</h2>
+    <section className={styles.wrapper}>
+      <div className={styles.form}>
+        <h2 className={`${styles.header} text text_type_main-medium`}>Регистрация</h2>
         <div className="pt-6 pb-20">
-          <form className={styles.loginFormBody} onSubmit={handleRegister}>
+          <form className={styles.body} onSubmit={handleRegister}>
             <Input
               type={'text'}
               placeholder={'Имя'}
