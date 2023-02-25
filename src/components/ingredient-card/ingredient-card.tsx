@@ -2,8 +2,7 @@ import React from 'react';
 import styles from './ingredient-card.module.css';
 import { Counter, CurrencyIcon } from '@ya.praktikum/react-developer-burger-ui-components';
 import { useDrag } from 'react-dnd/dist/hooks';
-import { TIngredient } from '../../services/types/index';
-import { useAppSelector } from '../../hooks/useForm';
+import { TIngredient, useAppSelector } from '../../services/types/index';
 
 interface IIngredienCard {
   id: string;

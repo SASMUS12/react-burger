@@ -1,0 +1,44 @@
+.profileMain {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  padding-top: 120px;
+  gap: 60px;
+}
+
+.profileMenu {
+  max-width: 320px;
+}
+
+.profileFields {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.profileButtons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 28px;
+}
+
+.cancelButton {
+  display: flex;
+  align-items: center;
+}
+
+a {
+  text-decoration: none;
+}
+
+.profileOrdersSection {
+  width: 100%;
+}
+
+.profileOrdersContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-height: 700px;
+  overflow-y: scroll;
+}

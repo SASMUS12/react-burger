@@ -3,8 +3,7 @@ import styles from './burger-ingredients.module.css';
 import IngredientCard from '../ingredient-card/ingredient-card';
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
 import { Link, useLocation } from 'react-router-dom';
-import { TIngredient } from '../../services/types/index';
-import { useAppSelector } from '../../hooks/useForm';
+import { TIngredient, useAppSelector } from '../../services/types/index';
 
 const BurgerIngredients: FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);

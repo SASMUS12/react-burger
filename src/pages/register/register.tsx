@@ -8,7 +8,8 @@ import {
   Button
 } from '@ya.praktikum/react-developer-burger-ui-components';
 import { register } from '../../services/action-creators/userActionCreators';
-import { useForm, useAppDispatch } from '../../hooks/useForm';
+import { useForm } from '../../hooks/useForm';
+import { useAppDispatch } from '../../services/types/index';
 
 export const RegisterPage: FC = () => {
   const dispatch = useAppDispatch();

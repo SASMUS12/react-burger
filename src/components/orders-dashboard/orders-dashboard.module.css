@@ -1,0 +1,26 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 60px;
+}
+
+.statuses {
+  display: flex;
+  gap: 36px;
+}
+
+.status {
+  flex: 1 0;
+}
+
+.statusReady {
+  color: #00cccc;
+}
+
+.numbers {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex-wrap: wrap;
+  max-height: 313px;
+}

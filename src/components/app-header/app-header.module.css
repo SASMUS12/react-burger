@@ -1,5 +1,5 @@
 .header {
-  background: #1c1c21;
+  background: #1C1C21;
 }
 
 .headerContainer {
@@ -25,8 +25,7 @@
   justify-content: end;
 }
 
-.linksBlock > div,
-.personalBlock > div {
+.linksBlock > div, .personalBlock > div {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -34,4 +33,13 @@
 
 a {
   text-decoration: none;
+  color: #fff;
+}
+
+.link {
+  display: flex;
+}
+
+.text {
+  padding-left: 10px;
 }

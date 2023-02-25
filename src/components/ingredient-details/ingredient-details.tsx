@@ -1,13 +1,16 @@
 import React, { FC } from 'react';
 import styles from './ingredient-details.module.css';
 import { useParams } from 'react-router-dom';
-import { TIngredient } from '../../services/types/index';
-import { useAppSelector } from '../../hooks/useForm';
+import { TIngredient, useAppSelector, TParams } from '../../services/types/index';
 
 const IngredientDetails: FC = () => {
-  const { id } = useParams<{ id: string }>();
+  const { id } = useParams<TParams>();
   const allIngredients = useAppSelector(store => store.burgerConstructorReducer.allIngredients);
   const currentIngredient = allIngredients.find((item: TIngredient) => item._id === id);
+
+  if(!currentIngredient) {
+    return null;
+  }
 
   return (
     <div className={`${styles.container} pb-15`}>

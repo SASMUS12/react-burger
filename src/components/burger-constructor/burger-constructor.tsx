@@ -14,8 +14,12 @@ import {
   addBunToConstructor
 } from '../../services/action-creators/burgerConstructorActionCreators';
 import { useHistory } from 'react-router-dom';
-import { TConstructorIngredient, TIngredient } from '../../services/types/index';
-import { useAppDispatch, useAppSelector } from '../../hooks/useForm';
+import {
+  TConstructorIngredient,
+  TIngredient,
+  useAppDispatch,
+  useAppSelector
+} from '../../services/types/index';
 import { REMOVE_INGREDIENT_FROM_CONSTRUCTOR } from '../../services/actions/burgerConstructorActions';
 
 const BurgerConstructor: FC = () => {
@@ -31,9 +35,14 @@ const BurgerConstructor: FC = () => {
 
   const handleMakeOrderClick = () => {
     if (!isAuthenticated) {
-      history.replace({ pathname: '/login' })
+      history.replace({ pathname: '/login' });
     } else {
-      const orderIngredients = constructorIngredients.concat(bun);
+      let orderIngredients;
+      if (bun) {
+        orderIngredients = constructorIngredients.concat(bun);
+      } else {
+        orderIngredients = constructorIngredients;
+      }
       dispatch(sendOrder(orderIngredients));
       setModalActive(true);
     }
@@ -60,9 +69,10 @@ const BurgerConstructor: FC = () => {
     accept: 'ingredient',
     drop(itemId: { id: string }) {
       const item = allIngredients.find((item: TIngredient) => item._id === itemId.id);
-      item.type === 'bun'
-        ? dispatch(addBunToConstructor(item))
-        : dispatch(addIngredientToConstructor(item));
+      if (item) {
+        if (item.type === 'bun') dispatch(addBunToConstructor(item));
+        if (item && item.type !== 'bun') dispatch(addIngredientToConstructor(item));
+      }
     }
   });
 
@@ -76,10 +86,7 @@ const BurgerConstructor: FC = () => {
 
   return (
     <>
-      <div
-        className={`${styles.Container} mt-25 mb-8 `}
-        ref={dropTarget}
-      >
+      <div className={`${styles.Container} mt-25 mb-8 `} ref={dropTarget}>
         {bun && (
           <div className="pb-4 pl-5">
             <ConstructorElement
@@ -106,7 +113,7 @@ const BurgerConstructor: FC = () => {
         </div>
 
         {bun && (
-          <div className='pl-8 pr-4'>
+          <div className="pl-8 pr-4">
             <ConstructorElement
               type="bottom"
               isLocked={true}

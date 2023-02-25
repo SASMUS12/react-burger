@@ -2,39 +2,48 @@ import React, { useRef } from 'react';
 import styles from './burger-constructor-element.module.css';
 import { ConstructorElement, DragIcon } from '@ya.praktikum/react-developer-burger-ui-components';
 import { useDrag, useDrop } from 'react-dnd';
-import { TConstructorIngredient } from '../../services/types/index';
-import { useAppSelector } from '../../hooks/useForm';
+import { TConstructorIngredient, useAppSelector } from '../../services/types/index';
 
 interface IBurgerConstructorElement {
   ingredient: TConstructorIngredient;
   handleClose: () => void;
   index: number;
-  moveIngredient: ( dragIndex: number, hoverIndex: number, constructorIngredients: TConstructorIngredient[] ) => void;
+  moveIngredient: (
+    dragIndex: number,
+    hoverIndex: number,
+    constructorIngredients: TConstructorIngredient[]
+  ) => void;
 }
 
-export const BurgerConstructorElement = ( { ingredient, handleClose, index, moveIngredient }: IBurgerConstructorElement ) => {
-
-  const constructorIngredients = useAppSelector(store => store.burgerConstructorReducer.constructorIngredients);
+export const BurgerConstructorElement = ({
+  ingredient,
+  handleClose,
+  index,
+  moveIngredient
+}: IBurgerConstructorElement) => {
+  const constructorIngredients = useAppSelector(
+    store => store.burgerConstructorReducer.constructorIngredients
+  );
   const id = ingredient.constructorId;
-  const ref = useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLLIElement>(null);
 
-  const [{ handlerId}, drop] = useDrop({
-    accept: "ingredient-sort",
+  const [{ handlerId }, drop] = useDrop({
+    accept: 'ingredient-sort',
     collect(monitor) {
       return {
-        handlerId: monitor.getHandlerId(),
-      }
+        handlerId: monitor.getHandlerId()
+      };
     },
     hover(item: unknown, monitor) {
-      const thisItem = item as IBurgerConstructorElement
+      const thisItem = item as IBurgerConstructorElement;
       if (!ref.current) {
-        return
+        return;
       }
       const dragIndex = thisItem.index;
       const hoverIndex = index;
 
       if (dragIndex === hoverIndex) {
-        return
+        return;
       }
       const hoverBoundingRect = ref.current?.getBoundingClientRect();
       const hoverMiddleY = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
@@ -48,27 +57,27 @@ export const BurgerConstructorElement = ( { ingredient, handleClose, index, move
         return;
       }
 
-      moveIngredient( dragIndex, hoverIndex, constructorIngredients );
+      moveIngredient(dragIndex, hoverIndex, constructorIngredients);
 
       thisItem.index = hoverIndex;
-    },
-  })
+    }
+  });
 
-  const [ {isDragging}, drag] = useDrag({
-    type: "ingredient-sort",
+  const [{ isDragging }, drag] = useDrag({
+    type: 'ingredient-sort',
     item: () => {
-      return { id, index }
+      return { id, index };
     },
-    collect: (monitor) => ({
+    collect: monitor => ({
       isDragging: monitor.isDragging()
     })
-  })
+  });
 
   const opacity = isDragging ? 0.15 : 1;
   drag(drop(ref));
 
   return (
-    <div className={styles.Item} ref={ref} style={{opacity}} data-handler-id={handlerId}>
+    <li className={styles.item} ref={ref} style={{ opacity }} data-handler-id={handlerId}>
       <div className={styles.dragIconBlock}>
         <DragIcon type="primary" />
       </div>
@@ -78,7 +87,6 @@ export const BurgerConstructorElement = ( { ingredient, handleClose, index, move
         thumbnail={ingredient.image}
         handleClose={handleClose}
       />
-    </div>
-  )
-
-}
+    </li>
+  );
+};

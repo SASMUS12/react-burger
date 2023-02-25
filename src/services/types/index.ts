@@ -3,6 +3,14 @@ import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import { ThunkAction, ThunkDispatch } from 'redux-thunk';
 import { TBurgerConstructorActions } from '../actions/burgerConstructorActions';
 import { TUserActions } from '../actions/userActions';
+import { TWSActions } from '../actions/wsActions';
+import {
+  WS_CONNECTION_START,
+  WS_CONNECTION_SUCCESS,
+  WS_CONNECTION_ERROR,
+  WS_CONNECTION_CLOSED,
+  WS_GET_MESSAGE
+} from '../actions/wsActions';
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = ThunkDispatch<RootState, never, TActions>;
@@ -35,9 +43,25 @@ export type TOrderIngredient = TIngredient & {
   quantityInOrder: number;
 };
 
-export type TActions = TBurgerConstructorActions | TUserActions;
+export type TActions = TBurgerConstructorActions | TUserActions | TWSActions;
 
 export type TAppThunk<TReturn = void> = ThunkAction<TReturn, RootState, never, TActions>;
+
+export const wsActions = {
+  wsInit: WS_CONNECTION_START,
+  onOpen: WS_CONNECTION_SUCCESS,
+  onClose: WS_CONNECTION_CLOSED,
+  onError: WS_CONNECTION_ERROR,
+  onMessage: WS_GET_MESSAGE
+};
+
+export type TWS = {
+  wsInit: typeof WS_CONNECTION_START;
+  onOpen: typeof WS_CONNECTION_SUCCESS;
+  onClose: typeof WS_CONNECTION_CLOSED;
+  onError: typeof WS_CONNECTION_ERROR;
+  onMessage: typeof WS_GET_MESSAGE;
+};
 
 export type TOrder = {
   createdAt: string;

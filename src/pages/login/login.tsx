@@ -7,7 +7,8 @@ import {
 } from '@ya.praktikum/react-developer-burger-ui-components';
 import { Link } from 'react-router-dom';
 import { login } from '../../services/action-creators/userActionCreators';
-import { useForm, useAppDispatch } from '../../hooks/useForm';
+import { useForm } from '../../hooks/useForm';
+import { useAppDispatch } from '../../services/types/index';
 
 export const Login: FC = () => {
   const dispatch = useAppDispatch();
