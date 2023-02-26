@@ -20,11 +20,11 @@ export const OrderInfo: FC = () => {
 
   let orderIngredients: TOrderIngredient[] = [];
   currentOrder?.ingredients.forEach((currentItem) => {
-    let currentIngredient = allIngredients.find(item => item._id === currentItem);
+    let currentIngredient = allIngredients.find((item) => item._id === currentItem);
     if (currentIngredient) {
       if (orderIngredients.find(item => item._id === currentIngredient?._id) === undefined) {
         let q = currentOrder?.ingredients.filter(item => item === currentIngredient?._id).length;
-        orderIngredients.push({ ...currentIngredient, quantityInOrder: q });
+        orderIngredients.push({...currentIngredient, quantityInOrder: q});
       }
     }
   });
@@ -56,7 +56,7 @@ export const OrderInfo: FC = () => {
         {formatStatus(currentOrder?.status)}
       </div>
       <div className="text text_type_main-medium mb-6">Состав:</div>
-      <div className={`${styles.container} mb-10 pr-6`}>
+      <div className={`${styles.ingredientsContainer} mb-10 pr-6`}>
         {orderIngredients.map(item => (
           <div className={styles.ingredient} key={item._id}>
             <div className={styles.preview}>
@@ -67,9 +67,9 @@ export const OrderInfo: FC = () => {
               />
             </div>
             <div
-              className={`${styles.ingredientNameBlock} text text_type_main-default`}
+              className={`${styles.block} text text_type_main-default`}
             >
-              <p className={styles.ingredientName}>{item.name}</p>
+              <p className={styles.name}>{item.name}</p>
             </div>
             <div className={styles.ingredientTotal}>
               <div className="text text_type_digits-default">

@@ -25,13 +25,13 @@ export const ResetPasswordPage: FC = () => {
   }
 
   return (
-    <section className={styles.loginWrapper}>
-      <div className={styles.loginForm}>
-        <h2 className={`${styles.loginHeader} text text_type_main-medium`}>
+    <section className={styles.wrapper}>
+      <div className={styles.form}>
+        <h2 className={`${styles.header} text text_type_main-medium`}>
           Восстановление пароля
         </h2>
         <div className="pt-6 pb-20">
-          <form className={styles.loginFormBody} onSubmit={handleResetPasswordRequest}>
+          <form className={styles.body} onSubmit={handleResetPasswordRequest}>
             <PasswordInput
               placeholder={'Введите новый пароль'}
               name={'newPassword'}

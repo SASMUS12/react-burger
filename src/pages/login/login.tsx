@@ -23,13 +23,23 @@ export const Login: FC = () => {
   };
 
   return (
-    <section className={styles.loginWrapper}>
-      <div className={styles.loginForm}>
-        <h2 className={`${styles.loginHeader} text text_type_main-medium`}>Вход</h2>
+    <section className={styles.wrapper}>
+      <div className={styles.form}>
+        <h2 className={`${styles.header} text text_type_main-medium`}>Вход</h2>
         <div className="pt-6 pb-20">
-          <form className={styles.loginFormBody} onSubmit={handleLogin}>
-            <EmailInput name={'email'} value={values.email} onChange={handleChange} />
-            <PasswordInput name={'password'} value={values.password} onChange={handleChange} />
+          <form className={styles.body} onSubmit={handleLogin}>
+            <EmailInput
+              name={'email'}
+              value={values.email}
+              onChange={handleChange}
+              data-testid="email_input"
+            />
+            <PasswordInput
+              name={'password'}
+              value={values.password}
+              onChange={handleChange}
+              data-testid="password_input"
+            />
             <Button htmlType="submit" type="primary" size="large">
               Войти
             </Button>

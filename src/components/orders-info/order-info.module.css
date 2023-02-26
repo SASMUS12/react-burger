@@ -27,7 +27,7 @@
     align-items: center;
   }
   
-  .ingredientPreview {
+  .preview {
     height: 64px;
     width: 64px;
     background-color: #131316;
@@ -36,17 +36,17 @@
     border: 2px solid #801AB2;
   }
   
-  .ingredientPreviewImage {
+  .previewImage {
     max-width: 112px;
     position: relative;
     left: -24px;
   }
   
-  .ingredientNameBlock {
+  .block {
     flex-grow: 1;
   }
   
-  .ingredientName {
+  .name {
     max-width: 320px;
   }
   
