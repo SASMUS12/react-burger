@@ -88,7 +88,7 @@ const BurgerConstructor: FC = () => {
     <>
       <div className={`${styles.container} mt-25 mb-8 `} ref={dropTarget} data-test="constructorContainer">
         {bun && (
-          <div className="pb-4 pl-5">
+          <div className="pb-4 pl-5" data-test="constructorBunTop">
             <ConstructorElement
               type="top"
               isLocked={true}
@@ -137,6 +137,7 @@ const BurgerConstructor: FC = () => {
             size="large"
             onClick={handleMakeOrderClick}
             disabled={constructorIngredients.length === 0 && !bun ? true : false}
+            data-test="submitOrderButton"
           >
             Оформить заказ
           </Button>

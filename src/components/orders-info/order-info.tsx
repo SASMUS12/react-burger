@@ -20,11 +20,11 @@ export const OrderInfo: FC = () => {
 
   let orderIngredients: TOrderIngredient[] = [];
   currentOrder?.ingredients.forEach((currentItem) => {
-    let currentIngredient = allIngredients.find(item => item._id === currentItem);
+    let currentIngredient = allIngredients.find((item) => item._id === currentItem);
     if (currentIngredient) {
       if (orderIngredients.find(item => item._id === currentIngredient?._id) === undefined) {
         let q = currentOrder?.ingredients.filter(item => item === currentIngredient?._id).length;
-        orderIngredients.push({ ...currentIngredient, quantityInOrder: q });
+        orderIngredients.push({...currentIngredient, quantityInOrder: q});
       }
     }
   });
